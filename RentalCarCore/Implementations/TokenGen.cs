@@ -47,7 +47,7 @@ namespace RentalCarCore.Implementations
 
         public string GenerateRefreshToken()
         {
-            return Guid.NewGuid().ToString(); 
+            return Guid.NewGuid().ToString();
         }
-}
+    }
 }

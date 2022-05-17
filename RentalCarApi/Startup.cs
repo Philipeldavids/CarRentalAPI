@@ -79,7 +79,7 @@ namespace RentalCarApi
             app.UseCors("CorsPolicy");
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseAuthorization();

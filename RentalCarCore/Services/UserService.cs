@@ -3,12 +3,11 @@ using RentalCarCore.Dtos.Response;
 using RentalCarCore.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using RentalCarInfrastructure.Interfaces;
 using RentalCarInfrastructure.Models;
+using RentalCarCore.Dtos.Request;
 
 namespace RentalCarCore.Services
 {
@@ -29,7 +28,7 @@ namespace RentalCarCore.Services
             if (user != null)
             {
                 var trips = await _unitOfWork.UserRepository.GetTripsByUserId(UserId);
-                if(trips != null)
+                if (trips != null)
                 {
                     var result = _mapper.Map<List<TripsDTO>>(trips);
                     return new Response<List<TripsDTO>>()
@@ -56,6 +55,40 @@ namespace RentalCarCore.Services
                 Message = "Response NotSuccessful",
                 ResponseCode = HttpStatusCode.BadRequest
             };
+        }
+
+        public async Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto)
+        {
+            var user = _unitOfWork.UserRepository.GetUser(Id);
+
+            if (user != null)
+            {
+
+                var result = await _unitOfWork.UserRepository.UpdateUser(new User()
+                {
+                    FirstName = string.IsNullOrWhiteSpace(updateUserDto.FirstName) ? updateUserDto.FirstName : updateUserDto.FirstName,
+                    LastName = string.IsNullOrWhiteSpace(updateUserDto.LastName) ? updateUserDto.LastName : updateUserDto.LastName,
+                    Address = string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber) ? updateUserDto.PhoneNumber : updateUserDto.PhoneNumber,
+                    PhoneNumber = string.IsNullOrWhiteSpace(updateUserDto.Address) ? updateUserDto.Address : updateUserDto.Address,
+
+                });
+
+                if (result)
+                {
+                    return new Response<string>()
+                    {
+                        IsSuccessful = true,
+                        Message = "Profile updated"
+                    };
+                }
+                return new Response<string>()
+                {
+                    IsSuccessful = false,
+                    Message = "Profile not updated"
+                };
+            }
+
+            throw new ArgumentException("User not found");
         }
     }
 }

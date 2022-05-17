@@ -95,7 +95,7 @@ namespace RentalCarCore.Services
                     Email = user.Email,
                     Token = emailToken,
                     FirstName = user.FirstName
-                   
+
                 };
                 await _confirmationMailService.SendAConfirmationEmail(answer, "ConfirmEmail.html");
                 return answer;
@@ -157,9 +157,9 @@ namespace RentalCarCore.Services
             throw new ArgumentException($"User with email '{confirmEmailRequest.Email}' not found");
         }
 
-        public async Task<Response<string>> UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDto)
+        public async Task<Response<string>> UpdatePasswordAsync(string Id, UpdatePasswordDTO updatePasswordDto)
         {
-            var user = await _userManager.FindByIdAsync(updatePasswordDto.Id);
+            var user = await _userManager.FindByIdAsync(Id);
             var comparePassword = await _userManager.CheckPasswordAsync(user, updatePasswordDto.CurrentPassword);
             if (comparePassword)
             {

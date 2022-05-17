@@ -10,7 +10,7 @@ namespace RentalCarCore.Interfaces
         Task<UserResponseDto> RegisterAsync(RegistrationDto registrationRequest);
         Task<Response<RefreshTokenResponse>> RefreshTokenAsync(RefreshTokenRequestDTO token);
         Task<Response<string>> EmailConfirmationAsync(ConfirmEmailRequestDTO confirmEmailRequest);
-        Task<Response<string>> UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDto);
+        Task<Response<string>> UpdatePasswordAsync(string Id, UpdatePasswordDTO updatePasswordDto);
         Task<Response<string>> ResetPasswordAsync(ResetPasswordDto resetPassword);
         Task<Response<string>> ForgotPasswordResetAsync(ForgotPasswordDto forgotPasswordDto);
     }

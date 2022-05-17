@@ -2,18 +2,16 @@
 using RentalCarInfrastructure.Context;
 using RentalCarInfrastructure.Models;
 using RentalCarInfrastructure.Repositories.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RentalCarInfrastructure.Repositories.Implementations
 {
-    public class UserRepository:GenericRepository<User>, IUserRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly AppDbContext _appDbContext;
-        public UserRepository(AppDbContext appDbContext):base(appDbContext)
+        public UserRepository(AppDbContext appDbContext) : base(appDbContext)
         {
             _appDbContext = appDbContext;
         }
@@ -32,7 +30,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
         public async Task<List<Trip>> GetTripsByUserId(string userId)
         {
-            var trips =await _appDbContext.Trips.Where(x => x.UserId == userId)
+            var trips = await _appDbContext.Trips.Where(x => x.UserId == userId)
                 .Include(y => y.Transactions).ToListAsync();
             return trips;
         }
