@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RentalCarCore.Dtos.Request;
 using RentalCarCore.Interfaces;
 using RentalCarInfrastructure.ModelImage;
 using Serilog;
@@ -64,6 +67,45 @@ namespace RentalCarApi.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [Authorize]
+        [HttpPut]
+        [Route("Id")]
+        public async Task<IActionResult> UpdatePassword(string Id, UpdateUserDto updateUserdDto)
+        {
+
+
+            //var userId = HttpContext.User.FindFirst(user => user.Type == ClaimTypes.NameIdentifier).Value;
+
+            try
+            {
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                if (ModelState.IsValid)
+                {
+                    var result = await _userService.UpdateUserDetails(Id, updateUserdDto);
+                    return Ok(result);
+                }
+
+                return BadRequest(ModelState);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Try again after 5 minutes");
+            }
+
         }
     }
 }

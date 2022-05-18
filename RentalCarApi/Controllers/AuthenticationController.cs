@@ -7,7 +7,7 @@ using RentalCarCore.Interfaces;
 using Serilog;
 using System;
 using System.Threading.Tasks;
-
+using System.Security.Claims;
 
 namespace RentalCarCore.Controllers
 {
@@ -70,6 +70,7 @@ namespace RentalCarCore.Controllers
         [Route("Update-password")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO updatePasswordDto)
         {
+            var userId = HttpContext.User.FindFirst(user => user.Type == ClaimTypes.NameIdentifier).Value;
             try
             {
 
@@ -80,7 +81,7 @@ namespace RentalCarCore.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    var result = await _authentication.UpdatePasswordAsync(updatePasswordDto);
+                    var result = await _authentication.UpdatePasswordAsync(userId, updatePasswordDto);
                     return Ok(result);
                 }
 
@@ -192,6 +193,5 @@ namespace RentalCarCore.Controllers
         }
     }
 }
-    
 
-       
+

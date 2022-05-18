@@ -11,6 +11,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using RentalCarInfrastructure.Interfaces;
 
 namespace RentalCarCore.Services
 {
@@ -19,17 +20,20 @@ namespace RentalCarCore.Services
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly ITokenGen _tokenGen;
-        private readonly ITokenRepository _tokenRepository;
         private readonly IConfirmationMailService _confirmationMailService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public Authentication(ITokenRepository tokenRepository, ITokenGen tokenGen, UserManager<User> userManager, IMapper mapper, IConfirmationMailService confirmationMailService)
+        public Authentication(ITokenGen tokenGen, 
+                            UserManager<User> userManager, IMapper mapper, 
+                            IConfirmationMailService confirmationMailService, IUnitOfWork unitOfWork)
         {
             _mapper = mapper;
-            _tokenRepository = tokenRepository;
             _tokenGen = tokenGen;
             _userManager = userManager;
             _confirmationMailService = confirmationMailService;
+            _unitOfWork = unitOfWork;
         }
+
         public async Task<Response<UserResponseDto>> Login(UserRequestDto userRequestDto)
         {
             User user = await _userManager.FindByEmailAsync(userRequestDto.Email);
@@ -41,7 +45,6 @@ namespace RentalCarCore.Services
             {
                 if (await _userManager.CheckPasswordAsync(user, userRequestDto.Password))
                 {
-
                     string refreshToken = _tokenGen.GenerateRefreshToken();
                     string token = _tokenGen.GenerateToken(user);
                     user.RefreshToken = refreshToken;
@@ -92,7 +95,7 @@ namespace RentalCarCore.Services
                     Email = user.Email,
                     Token = emailToken,
                     FirstName = user.FirstName
-                   
+
                 };
                 await _confirmationMailService.SendAConfirmationEmail(answer, "ConfirmEmail.html");
                 return answer;
@@ -106,7 +109,7 @@ namespace RentalCarCore.Services
             var refreshToken = token.RefreshToken;
             var userId = token.UserId;
 
-            var user = await _tokenRepository.GetUserByRefreshToken(refreshToken, userId);
+            var user = await _unitOfWork.UserRepository.GetUser(userId);
             if (user.RefreshToken != refreshToken || user.ExpiryTime != DateTime.Now)
             {
                 response.Data = null;
@@ -122,7 +125,7 @@ namespace RentalCarCore.Services
             };
 
             user.RefreshToken = refreshMapping.NewRefreshToken;
-            await _tokenRepository.UpdateUser(user);
+            await _unitOfWork.UserRepository.UpdateUser(user);
             response.Data = refreshMapping;
             response.ResponseCode = HttpStatusCode.OK;
             response.Message = "Token Refresh Successfully";
@@ -143,7 +146,8 @@ namespace RentalCarCore.Services
                     var response = new Response<string>()
                     {
                         Message = "Email Confirmation was successful",
-                        IsSuccessful = true
+                        IsSuccessful = true,
+                        ResponseCode = HttpStatusCode.OK,  
                     };
 
                     return response;
@@ -153,9 +157,9 @@ namespace RentalCarCore.Services
             throw new ArgumentException($"User with email '{confirmEmailRequest.Email}' not found");
         }
 
-        public async Task<Response<string>> UpdatePasswordAsync(UpdatePasswordDTO updatePasswordDto)
+        public async Task<Response<string>> UpdatePasswordAsync(string Id, UpdatePasswordDTO updatePasswordDto)
         {
-            var user = await _userManager.FindByIdAsync(updatePasswordDto.Id);
+            var user = await _userManager.FindByIdAsync(Id);
             var comparePassword = await _userManager.CheckPasswordAsync(user, updatePasswordDto.CurrentPassword);
             if (comparePassword)
             {

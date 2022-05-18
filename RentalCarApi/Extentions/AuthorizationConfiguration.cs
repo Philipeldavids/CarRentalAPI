@@ -34,20 +34,6 @@ namespace RentalCarApi.Extentions
                     ClockSkew = TimeSpan.Zero
                 };
 
-                // an event to let us know if jwt access token has expired
-
-                options.Events = new JwtBearerEvents
-                {
-                    OnAuthenticationFailed = response =>
-                    {
-                        if (response.Exception.GetType() == typeof(SecurityTokenExpiredException))
-                        {
-                            response.Response.Headers.Add("Is-token-expired", "true");
-                        }
-                        return Task.CompletedTask;
-                    }
-                };
-
             });
 
             services.AddAuthorization(options =>
@@ -56,9 +42,6 @@ namespace RentalCarApi.Extentions
                 .AddAuthorization(options => options.AddPolicy("RequireCustomerOnly", policy => policy.RequireRole(UserRoles.Customer)))
                 .AddAuthorization(options => options.AddPolicy("RequireDealerAndCustomer", policy => policy.RequireRole(UserRoles.Dealer, UserRoles.Admin)));
         }
-
-
-        
 
     }
 }
