@@ -43,7 +43,7 @@ namespace RentalCarCore.Services
                 {
                     Data = null,
                     IsSuccessful = false,
-                    Message = "Response Successful",
+                    Message = "Response NotSuccessful",
                     ResponseCode = HttpStatusCode.BadRequest
                 };
             }
@@ -52,7 +52,7 @@ namespace RentalCarCore.Services
             {
                 Data = null,
                 IsSuccessful = false,
-                Message = "Response UnSuccessful",
+                Message = "Response NotSuccessful",
                 ResponseCode = HttpStatusCode.BadRequest
             };
         }

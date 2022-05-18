@@ -1,7 +1,5 @@
 ﻿using RentalCarInfrastructure.Context;
 using RentalCarInfrastructure.Interfaces;
-using RentalCarInfrastructure.Models;
-using RentalCarInfrastructure.Repositories.Implementations;
 using RentalCarInfrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -16,6 +14,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         private readonly AppDbContext _appDbContext;
         private IUserRepository _userRepository;
         private ITripRepository _tripRepository;
+        private ICarRepository _carRepository;
        
         public UnitOfWork(AppDbContext appDbContext)
         {
@@ -23,6 +22,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         }
         public IUserRepository UserRepository => _userRepository ??= new UserRepository(_appDbContext);
         public ITripRepository TripRepository => _tripRepository ??= new TripRepository(_appDbContext);
+        public ICarRepository CarRepository => _carRepository  ??= new CarRepository(_appDbContext);    
 
     }
 }
