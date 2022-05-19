@@ -86,5 +86,13 @@ namespace RentalCarApi.Controllers
             }
 
         }
+
+        [HttpGet("GetAllUsers")]
+       // [Authorize(Roles = "Admin")]
+       public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
+        {
+            var response = await _userService.GetUsersAsync(pageSize, pageNumber);
+            return StatusCode((int)response.ResponseCode, response);
+        }
     }
 }

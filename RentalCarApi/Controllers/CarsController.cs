@@ -42,5 +42,13 @@ namespace RentalCarApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
             }
         }
+
+        [HttpGet("GetAllCars")]
+        public async Task<IActionResult> GetAllCars(int pageSize, int pageNumber)
+        {
+            var carResponse = await _carService.GetAllCarsAsync(pageSize, pageNumber);
+            return StatusCode((int) carResponse.ResponseCode, carResponse);
+        }
+
     }
 }

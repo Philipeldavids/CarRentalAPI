@@ -7,5 +7,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     public interface ICarRepository
     {
         Task<IEnumerable<Car>> GetAllFeatureCarsAsync();
+        Task<IEnumerable<Car>> GetAllCarsAsync();
     }
 }
