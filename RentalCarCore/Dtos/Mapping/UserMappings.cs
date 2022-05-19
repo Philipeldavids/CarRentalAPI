@@ -18,6 +18,8 @@ namespace RentalCarCore.Dtos.Mapping
             CreateMap<RegistrationDto, User>().ReverseMap();
             CreateMap<Trip, TripsDTO>().ReverseMap();
             CreateMap<Car,CarDTO>().ReverseMap();
+            CreateMap<Car,CarDetailsDTO>()
+                .ForMember(car => car.Ratings, x => x.MapFrom(y => y.Ratings.Count == 0 ? 0 : (double)y.Ratings.Sum(car => car.Ratings))).ReverseMap();
         }
     }
 }

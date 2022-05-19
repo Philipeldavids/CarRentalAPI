@@ -10,5 +10,6 @@ namespace RentalCarCore.Interfaces
         Task<Response<List<TripsDTO>>> GetTrips(string UserId);
 
         Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto);
+        Task<Response<UserDetailResponseDTO>> GetUser(string userId);
     }
 }
