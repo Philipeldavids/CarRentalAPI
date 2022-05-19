@@ -44,5 +44,29 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.BadRequest
             };
         }
+
+        public async Task<Response<List<CarDetailsDTO>>> GetCarDetailsAsync(string carId)
+        {
+            var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(carId);
+            if (car != null)
+            {
+                var result = _mapper.Map<List<CarDetailsDTO>>(car);
+                return new Response<List<CarDetailsDTO>>()
+                {
+                    Data = result,
+                    IsSuccessful = true,
+                    Message = "Response Successful",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+
+            return new Response<List<CarDetailsDTO>>()
+            {
+                Data = null,
+                IsSuccessful = false,
+                Message = "Response NotSuccessful",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
     }
 }

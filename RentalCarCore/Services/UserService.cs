@@ -90,5 +90,23 @@ namespace RentalCarCore.Services
 
             throw new ArgumentException("User not found");
         }
+
+        public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
+        {
+            User user = await _unitOfWork.UserRepository.GetUser(userId);
+            if (user != null)
+            {
+                var result = _mapper.Map<UserDetailResponseDTO>(user);
+                return new Response<UserDetailResponseDTO>()
+                {
+                    Data = result,
+                    IsSuccessful = true,
+                    Message = "Successful",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+
+            throw new ArgumentException("Resourse not found");
+        }
     }
 }

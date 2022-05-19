@@ -107,5 +107,22 @@ namespace RentalCarApi.Controllers
             }
 
         }
+
+        [HttpGet("UserId")]
+        public async Task<IActionResult>GetUser(string userId)
+        {
+            try
+            {
+                return Ok(await _userService.GetUser(userId));
+            }
+            catch (ArgumentException argex)
+            {
+                return BadRequest(argex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
