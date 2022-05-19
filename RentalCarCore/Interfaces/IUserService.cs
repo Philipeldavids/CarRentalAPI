@@ -11,6 +11,6 @@ namespace RentalCarCore.Interfaces
         Task<Response<List<TripsDTO>>> GetTrips(string UserId);
 
         Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto);
-        Task<Response<PaginationModel<IEnumerable<GetAllUsersRequestDto>>>> GetUsersAsync(int pageSize, int pageNumber);
+        Task<Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>> GetUsersAsync(int pageSize, int pageNumber);
     }
 }

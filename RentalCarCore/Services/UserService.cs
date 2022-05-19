@@ -96,15 +96,15 @@ namespace RentalCarCore.Services
             throw new ArgumentException("User not found");
         }
 
-        public async Task<Response<PaginationModel<IEnumerable<GetAllUsersRequestDto>>>> GetUsersAsync(int pageSize, int pageNumber)
+        public async Task<Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>> GetUsersAsync(int pageSize, int pageNumber)
         {
             var users = await _userManager.Users.ToListAsync();
-            var response = _mapper.Map<IEnumerable<GetAllUsersRequestDto>>(users);
+            var response = _mapper.Map<IEnumerable<GetAllUserResponsetDto>>(users);
 
             if (users != null)
             {
                 var result = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
-                return new Response<PaginationModel<IEnumerable<GetAllUsersRequestDto>>>()
+                return new Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>()
                 {
                     Data = result,
                     Message = "List of All Users",
@@ -113,7 +113,7 @@ namespace RentalCarCore.Services
                 };
             }
 
-            return new Response<PaginationModel<IEnumerable<GetAllUsersRequestDto>>>()
+            return new Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>()
             {
                 Data = null,
                 Message = "No Registered Users",

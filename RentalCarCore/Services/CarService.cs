@@ -48,14 +48,14 @@ namespace RentalCarCore.Services
             };
         }
 
-        public async Task<Response<PaginationModel<IEnumerable<CarRequestDto>>>> GetAllCarsAsync(int pageSize, int pageNumber)
+        public async Task<Response<PaginationModel<IEnumerable<CarResponseDto>>>> GetAllCarsAsync(int pageSize, int pageNumber)
         {
             var cars = await _uintOfWork.CarRepository.GetAllCarsAsync();
-            var carResponse = _mapper.Map<IEnumerable<CarRequestDto>>(cars);
+            var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars);
             if(cars != null)
             {
                 var carResult = PaginationClass.PaginationAsync(carResponse, pageSize, pageNumber);
-                return new Response<PaginationModel<IEnumerable<CarRequestDto>>>
+                return new Response<PaginationModel<IEnumerable<CarResponseDto>>>
                 {
                     Data = carResult,
                     IsSuccessful = true,
@@ -63,7 +63,7 @@ namespace RentalCarCore.Services
                     ResponseCode = HttpStatusCode.OK
                 };
             }
-            return new Response<PaginationModel<IEnumerable<CarRequestDto>>>
+            return new Response<PaginationModel<IEnumerable<CarResponseDto>>>
             {
                 IsSuccessful = false,
                 Message = "List of cars Not Found",
