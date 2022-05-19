@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalCarCore.Dtos.Request;
 using RentalCarCore.Interfaces;
+using RentalCarInfrastructure.ModelImage;
 using Serilog;
 
 namespace RentalCarApi.Controllers
@@ -17,9 +18,11 @@ namespace RentalCarApi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly IImageService _imageService;
+        public UsersController(IUserService userService, IImageService imageService)
         {
             _userService = userService;
+            _imageService = imageService;
         }
 
         [HttpGet("UserId/GetUserTrips")]
@@ -45,7 +48,25 @@ namespace RentalCarApi.Controllers
                 Log.Logger.Error(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
             }
+        }
 
+        [HttpPatch("UploadImage")]
+        public async Task<IActionResult> UploadImage([FromForm] AddImageDto imageDto)
+        {
+            try
+            {
+                var upload = await _imageService.UploadAsync(imageDto.Image);
+                var result = new ImageAddedDto()
+                {
+                    PublicId = upload.PublicId,
+                    Url = upload.Url.ToString()
+                };
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]

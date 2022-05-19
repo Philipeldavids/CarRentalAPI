@@ -13,7 +13,7 @@ namespace RentalCarInfrastructure.Models
         public string CarId { get; set; }
 
         [Required]
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } 
 
         public bool IsFeature { get; set; }
     }

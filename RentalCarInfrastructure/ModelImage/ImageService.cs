@@ -6,7 +6,6 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Linq;
 
 namespace RentalCarInfrastructure.ModelImage
 {
@@ -33,13 +32,22 @@ namespace RentalCarInfrastructure.ModelImage
                 throw new ArgumentException(ImageServiceFeedBacks.sizeExceeded);
             }
 
+            var pictureFormat = false;
             var listOfImageExtensions = _configuration.GetSection(ImageServiceFeedBacks.photoFormat).Get<List<string>>();
+            foreach (var item in listOfImageExtensions)
+            {
+                if (image.FileName.EndsWith(item))
+                {
+                    pictureFormat = true;
+                    break;
+                }
+            }
 
-            if(listOfImageExtensions.Any(x => !image.FileName.EndsWith(x)))
+            if (pictureFormat == false)
             {
                 throw new ArgumentException(ImageServiceFeedBacks.unsupportedFormat);
             }
-           
+            
             var uploadResult = new ImageUploadResult();
 
             //fetch the image using image stream
