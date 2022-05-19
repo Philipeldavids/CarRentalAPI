@@ -20,11 +20,8 @@ namespace RentalCarCore.Dtos.Response
         public double Price { get; set; }
         public string UnitOfPrice { get; set; }
         public bool IsVerify { get; set; }
-        public virtual Dealer Dealers { get; set; }
         public virtual CarDetail CarDetails { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Offer> Offers { get; set; }
         public virtual ICollection<Trip> Trips { get; set; }
         public virtual ICollection<Image> Images { get; set; }
     }
