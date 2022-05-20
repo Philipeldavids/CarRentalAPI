@@ -19,7 +19,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         public async Task<bool> Add(T entity)
         {
             await _dbSet.AddAsync(entity);
-            return _dbContext.SaveChanges() > 0;
+            return await _dbContext.SaveChangesAsync() > 0;
         }
 
         public async Task<bool> AddRange(IEnumerable<T> entities)

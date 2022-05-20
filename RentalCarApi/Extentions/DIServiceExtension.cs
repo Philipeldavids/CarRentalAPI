@@ -23,6 +23,7 @@ namespace RentalCarApi.Extentions
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<ICarService, CarService>();    
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
         }
     }
 }
