@@ -108,6 +108,79 @@ namespace RentalCarApi.Controllers
 
         }
 
+        [HttpPost("AddRating")]
+        public async Task<IActionResult> AddRating(RatingDto ratingDto)
+        {
+            try
+            {
+                if(!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (ModelState.IsValid)
+                {
+                    var result = await _userService.AddRating(ratingDto);
+                    return Ok(result);
+                }
+                return BadRequest(ModelState);
+            }
+            catch(ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after 5 minutes");
+            }
+        }
+        [HttpPost("AddComment")]
+        public async Task<IActionResult> AddComment(CommentDto commentDto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                if (ModelState.IsValid)
+                {
+                    var result = await _userService.AddComment(commentDto);
+                    return Ok(result);
+                }
+                return BadRequest(ModelState);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after 5 minutes");
+
+            }
+        }
+        [HttpGet("UserId")]
+        public async Task<IActionResult>GetUser(string userId)
+        {
+            try
+            {
+                return Ok(await _userService.GetUser(userId));
+            }
+            catch (ArgumentException argex)
+            {
+                return BadRequest(argex.Message);
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
+
+            }
+        }
+
         [HttpGet("GetAllUsers")]
        [Authorize(Roles = "Admin")]
        public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)

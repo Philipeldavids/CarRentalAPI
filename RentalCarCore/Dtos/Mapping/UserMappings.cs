@@ -17,7 +17,14 @@ namespace RentalCarCore.Dtos.Mapping
             CreateMap<User, UserResponseDto>().ReverseMap();
             CreateMap<RegistrationDto, User>().ReverseMap();
             CreateMap<Trip, TripsDTO>().ReverseMap();
+
+            CreateMap<Rating, RatingDto>().ReverseMap();
+            CreateMap<Comment, CommentDto>().ReverseMap();
+
             CreateMap<Car,CarDTO>().ReverseMap();
+            CreateMap<Car,CarDetailsDTO>()
+                .ForMember(car => car.Ratings, x => x.MapFrom(y => y.Ratings.Count == 0 ? 0 : (double)y.Ratings.Sum(car => car.Ratings))).ReverseMap();
+
             CreateMap<User, GetAllUserResponsetDto>().ReverseMap();
             CreateMap<Car, CarResponseDto>()
                 .ForMember(car => car.ImageUrl, opt => opt.MapFrom(src => src.Images.FirstOrDefault(gallery => gallery.IsFeature).ImageUrl))

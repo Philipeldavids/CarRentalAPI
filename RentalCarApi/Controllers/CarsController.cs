@@ -18,12 +18,37 @@ namespace RentalCarApi.Controllers
         {
             _carService = carService;
         }
+
         [HttpGet("GetFeaturedCars")]
         public async Task<IActionResult> GetFeaturedCars()
         {
             try
             {
                 var result = await _carService.GetListOfFeatureCarsAsync();
+                if (result.IsSuccessful)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+            }
+        }
+        [HttpGet("carDetails")]
+        public async Task<IActionResult> GetCarDetails(string carId)
+        {
+            try
+            {
+                var result = await _carService.GetCarDetailsAsync(carId);
                 if (result.IsSuccessful)
                 {
                     return Ok(result);

@@ -24,9 +24,18 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                   .Include(x => x.CarDetails)
                   .Include(i => i.Images)
                   .Include(r => r.Ratings);
-            var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).ToListAsync();
-            var nums = query.OrderBy(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).Select(x => x.Ratings.Sum(x=>x.Ratings) / x.Ratings.Count).ToList();
+            var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).Take(6).ToListAsync();
             return cars;
+        }
+
+        public async Task<IEnumerable<Car>> GetCarDetailsAsync(string carId)
+        {
+            var carDetails = await _appDbContext.Cars
+                             .Include(x => x.CarDetails)
+                             .Include(x => x.Images)
+                             .Include(x => x.Ratings)
+                             .Include(x => x.Comments).Where(y => y.Id == carId).ToListAsync();
+            return carDetails;
         }
         public async Task<IEnumerable<Car>> GetAllCarsAsync()
         {

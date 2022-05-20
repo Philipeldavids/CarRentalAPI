@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RentalCarCore.Dtos.Response
 {
-    public class CarDTO
+    public class CarDetailsDTO
     {
         public string DealerId { get; set; }
         public string Model { get; set; }
@@ -22,7 +22,9 @@ namespace RentalCarCore.Dtos.Response
         public bool IsVerify { get; set; }
         public virtual CarDetail CarDetails { get; set; }
         public virtual ICollection<Rating> Ratings { get; set; }
-        public virtual ICollection<Trip> Trips { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Image> Images { get; set; }
+        
+            
     }
 }
