@@ -31,8 +31,10 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         public async Task<IEnumerable<Car>> GetAllCarsAsync()
         {
             var query = await _appDbContext.Cars
+                .Where(x => x.Images.Count > 0)
                 .Include(x => x.Images.Where(x => x.IsFeature == true))
-                .Include(x => x.Ratings).ToListAsync();
+                .Include(x => x.Ratings)
+                .ToListAsync();
             return query;
         }
     }
