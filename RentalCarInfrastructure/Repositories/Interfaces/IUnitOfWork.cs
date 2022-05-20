@@ -13,6 +13,10 @@ namespace RentalCarInfrastructure.Interfaces
     {
         IUserRepository UserRepository { get; }
         ITripRepository TripRepository { get; }
+
         ICommentRepository CommentRepository { get; }   
+
+        ICarRepository CarRepository { get; }   
+
     }
 }

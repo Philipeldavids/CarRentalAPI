@@ -21,6 +21,7 @@ namespace RentalCarApi.Extentions
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IConfirmationMailService, ConfirmationMailService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ICarService, CarService>();    
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             
         }

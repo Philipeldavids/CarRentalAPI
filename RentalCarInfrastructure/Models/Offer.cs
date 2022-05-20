@@ -17,7 +17,6 @@ namespace RentalCarInfrastructure.Models
 
         [StringLength(50, MinimumLength = 3, ErrorMessage = DataAnnotationsHelper.TypeOfOfferValidator)]
         public string TypeOfOffer { get; set; }
-
         public bool IsActive { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
