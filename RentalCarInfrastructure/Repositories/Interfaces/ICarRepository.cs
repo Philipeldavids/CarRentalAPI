@@ -8,5 +8,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<Car>> GetAllFeatureCarsAsync();
         Task<IEnumerable<Car>> GetCarDetailsAsync(string carId);
+        Task<IEnumerable<Car>> GetAllCarsAsync();
     }
 }

@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using RentalCarCore.Dtos.Response;
-using RentalCarCore.Dtos.Request;
 using RentalCarCore.Interfaces;
 using RentalCarCore.Utilities;
 using RentalCarInfrastructure.ModelMail;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace RentalCarCore.Services

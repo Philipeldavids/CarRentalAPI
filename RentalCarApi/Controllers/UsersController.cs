@@ -146,7 +146,7 @@ namespace RentalCarApi.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    var result = await _userService.AddComment(commentDto); 
+                    var result = await _userService.AddComment(commentDto);
                     return Ok(result);
                 }
                 return BadRequest(ModelState);
@@ -161,7 +161,8 @@ namespace RentalCarApi.Controllers
                 Log.Logger.Error(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after 5 minutes");
 
-
+            }
+        }
         [HttpGet("UserId")]
         public async Task<IActionResult>GetUser(string userId)
         {
@@ -178,6 +179,14 @@ namespace RentalCarApi.Controllers
                 return StatusCode(500);
 
             }
+        }
+
+        [HttpGet("GetAllUsers")]
+       [Authorize(Roles = "Admin")]
+       public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
+        {
+            var response = await _userService.GetUsersAsync(pageSize, pageNumber);
+            return StatusCode((int)response.ResponseCode, response);
         }
     }
 }

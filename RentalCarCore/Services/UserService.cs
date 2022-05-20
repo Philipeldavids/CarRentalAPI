@@ -10,17 +10,22 @@ using RentalCarInfrastructure.Models;
 using RentalCarCore.Dtos.Request;
 using RentalCarInfrastructure.Repositories.Interfaces;
 using System.Linq;
+using Microsoft.AspNetCore.Identity;
+using RentalCarCore.Utilities.Pagination;
+using Microsoft.EntityFrameworkCore;
 
 namespace RentalCarCore.Services
 {
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IGenericRepository<Rating> _ratingRepository;
         
-        public UserService(IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository)
+        public UserService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository)
         {
+            _userManager = userManager;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _ratingRepository = ratingRepository;
@@ -142,9 +147,9 @@ namespace RentalCarCore.Services
             var user = await _unitOfWork.UserRepository.GetUser(commentDto.UserId);
             var trips = await _unitOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
             var trip = trips.FirstOrDefault(x => x.CarId == commentDto.CarId);
-            if (user != null )
+            if (user != null)
             {
-                if(trip != null)
+                if (trip != null)
                 {
                     var comment = _mapper.Map<Comment>(commentDto);
                     var result = await _unitOfWork.CommentRepository.AddComment(comment);
@@ -173,7 +178,7 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.BadRequest
             };
 
-
+        }
         public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
         {
             User user = await _unitOfWork.UserRepository.GetUser(userId);
@@ -192,5 +197,32 @@ namespace RentalCarCore.Services
             throw new ArgumentException("Resourse not found");
 
         }
+
+        public async Task<Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>> GetUsersAsync(int pageSize, int pageNumber)
+        {
+            var users = await _userManager.Users.ToListAsync();
+            var response = _mapper.Map<IEnumerable<GetAllUserResponsetDto>>(users);
+
+            if (users != null)
+            {
+                var result = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>()
+                {
+                    Data = result,
+                    Message = "List of All Users",
+                    ResponseCode = HttpStatusCode.OK,
+                    IsSuccessful = true
+                };
+            }
+
+            return new Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>()
+            {
+                Data = null,
+                Message = "No Registered Users",
+                ResponseCode = HttpStatusCode.NoContent,
+                IsSuccessful = false
+            };
+        }
     }
 }
+

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
+using RentalCarCore.Dtos.Request;
 using RentalCarCore.Dtos.Response;
 using RentalCarCore.Interfaces;
+using RentalCarCore.Utilities.Pagination;
 using RentalCarInfrastructure.Interfaces;
+using RentalCarInfrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -66,6 +69,29 @@ namespace RentalCarCore.Services
                 IsSuccessful = false,
                 Message = "Response NotSuccessful",
                 ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
+
+        public async Task<Response<PaginationModel<IEnumerable<CarResponseDto>>>> GetAllCarsAsync(int pageSize, int pageNumber)
+        {
+            var cars = await _uintOfWork.CarRepository.GetAllCarsAsync();
+            var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars);
+            if(cars != null)
+            {
+                var carResult = PaginationClass.PaginationAsync(carResponse, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<CarResponseDto>>>
+                {
+                    Data = carResult,
+                    IsSuccessful = true,
+                    Message = "List of Cars",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<CarResponseDto>>>
+            {
+                IsSuccessful = false,
+                Message = "List of cars Not Found",
+                ResponseCode = HttpStatusCode.NoContent,
             };
         }
     }
