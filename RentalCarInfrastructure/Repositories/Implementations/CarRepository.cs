@@ -58,11 +58,27 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             var result = carLocation;
 
 
-            if (state == null)
+            if (state != null)
             {
                 result = (List<Car>)(IIncludableQueryable<Car, ICollection<Location>>)result.Where(x => x.Dealers.Locations.Contains(state));
             }
             return result;
+        }
+
+        public async Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate)
+        {
+            var carLocation = await _appDbContext.Cars
+                              .Include(cd => cd.CarDetails)
+                              .Include(tr => tr.Trips)
+                              .Include(d => d.Dealers.Locations).ToListAsync();
+
+            var result = carLocation;
+
+            if (pickupDate < returnDate)
+            {
+                result = result.Where(r => r.Trips.FirstOrDefault(pickupDate);
+            }
+            if (carLocation.Where(d => d.Trips.Contains(pickupDate))
         }
     }
 }
