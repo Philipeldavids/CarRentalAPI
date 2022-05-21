@@ -80,9 +80,8 @@ namespace RentalCarApi
 
             app.UseRouting();
             app.UseAuthentication();
-            app.UseMiddleware<ErrorHandlerMiddleware>();
-
             app.UseAuthorization();
+            app.UseMiddleware<ErrorHandlerMiddleware>();
             Seeder.Seed(roleManager, userManager, dbContext).GetAwaiter().GetResult();
 
             app.UseEndpoints(endpoints =>
