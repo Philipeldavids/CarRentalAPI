@@ -9,6 +9,7 @@ namespace RentalCarCore.Dtos.Response
 {
     public class SearchResponseDto
     {
+        public string CarId { get; set; }
         public string DealerId { get; set; }
 
         public string Model { get; set; }
