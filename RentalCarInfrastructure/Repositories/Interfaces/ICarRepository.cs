@@ -1,6 +1,7 @@
 ﻿using RentalCarInfrastructure.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
 
 namespace RentalCarInfrastructure.Repositories.Interfaces
 {
@@ -9,5 +10,8 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<IEnumerable<Car>> GetAllFeatureCarsAsync();
         Task<IEnumerable<Car>> GetCarDetailsAsync(string carId);
         Task<IEnumerable<Car>> GetAllCarsAsync();
+
+        Task<IEnumerable<Car>> GetCarByLocationAsync(Location state);
+        Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate);
     }
 }
