@@ -19,7 +19,7 @@ public class PaginationClass
                 PreviousPage = pageNumber > 0 ? pageNumber - 1 : 0
             };
             pageResult.TotalNumberOfPages = (int)Math.Ceiling(count / (double)(pageResult.PageSize));
-            var sourceList = queryable.Skip(pageResult.CurrentPage * pageResult.PageSize).Take(pageResult.PageSize).ToList();
+            var sourceList = queryable.Skip((pageResult.CurrentPage - 1) * pageResult.PageSize).Take(pageResult.PageSize).ToList();
             pageResult.PageItems = sourceList;
             return pageResult;
         }

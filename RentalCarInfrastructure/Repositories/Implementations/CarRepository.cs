@@ -21,12 +21,14 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Car>> GetAllFeatureCarsAsync()
         {
-            var query = _appDbContext.Cars
+            var query = await _appDbContext.Cars
                   .Include(x => x.CarDetails)
                   .Include(i => i.Images)
-                  .Include(r => r.Ratings);
-            var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).Take(6).ToListAsync();
-            return cars;
+                  .Include(r => r.Ratings).ToListAsync();
+                  
+
+            //var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).Take(6).ToListAsync();
+            return query;
         }
 
         public async Task<IEnumerable<Car>> GetCarDetailsAsync(string carId)
@@ -74,11 +76,16 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
             var result = carLocation;
 
-            if (pickupDate < returnDate)
-            {
-                result = result.Where(r => r.Trips.FirstOrDefault(pickupDate);
-            }
-            if (carLocation.Where(d => d.Trips.Contains(pickupDate))
+            //if (pickupDate < returnDate)
+            //{
+            //    result = result.Where(r => r.Trips.FirstOrDefault());
+            //}
+            //if (carLocation.Where(d => d.Trips.Contains(pickupDate))
+            //{
+
+            //}
+
+            return result;
         }
     }
 }

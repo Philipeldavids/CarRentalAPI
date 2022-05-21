@@ -66,9 +66,10 @@ namespace RentalCarCore.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireAdminOnly")]
+        
         [HttpPatch]
         [Route("Update-password")]
+        [Authorize]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO updatePasswordDto)
         {
             var userId = HttpContext.User.FindFirst(user => user.Type == ClaimTypes.NameIdentifier).Value;
