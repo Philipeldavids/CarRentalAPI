@@ -78,7 +78,11 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             {
                 result = result.Where(r => r.Trips.FirstOrDefault(pickupDate);
             }
-            if (carLocation.Where(d => d.Trips.Contains(pickupDate))
+            if (carLocation.Where(d => d.Trips.Contains(pickupDate)){
+
+            }
+
+
         }
     }
 }
