@@ -13,7 +13,7 @@ namespace RentalCarCore.Controllers
 {
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthentication _authentication;
