@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using RentalCarCore.Dtos;
 using RentalCarCore.Interfaces;
@@ -17,13 +18,15 @@ namespace RentalCarCore.Implementations
     public class TokenGen : ITokenGen
     {
         private readonly IConfiguration _configuration;
-        public TokenGen(IConfiguration configuration)
+        private readonly UserManager<User> _userManager;
+        public TokenGen(IConfiguration configuration, UserManager<User> userManager)
         {
             _configuration = configuration;
+            _userManager = userManager;
         }
 
 
-        public string GenerateToken(User user)
+        public async Task<string> GenerateToken(User user)
         {
             var userClaims = new List<Claim>
             {
@@ -32,6 +35,13 @@ namespace RentalCarCore.Implementations
                 new Claim("FirstName", user.FirstName),
                 new Claim("LastName", user.LastName),
             };
+
+            //Gets the roles of the logged in user and adds it to Claims
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                userClaims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWTSettings:SecretKey"]));
             var userToken = new JwtSecurityToken(audience: _configuration

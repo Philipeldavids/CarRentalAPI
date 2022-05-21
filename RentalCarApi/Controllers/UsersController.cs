@@ -50,8 +50,8 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [HttpPatch("UploadImage")]
-        public async Task<IActionResult> UploadImage([FromForm] AddImageDto imageDto)
+        [HttpPatch("Id/UploadImage")]
+        public async Task<IActionResult> UploadImage(string Id, [FromForm] AddImageDto imageDto)
         {
             try
             {
@@ -109,12 +109,12 @@ namespace RentalCarApi.Controllers
         }
 
        
-        [HttpGet("UserId")]
-        public async Task<IActionResult>GetUser(string userId)
+        [HttpGet("Id")]
+        public async Task<IActionResult>GetUser(string Id)
         {
             try
             {
-                return Ok(await _userService.GetUser(userId));
+                return Ok(await _userService.GetUser(Id));
             }
             catch (ArgumentException argex)
             {
@@ -127,7 +127,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [HttpGet("GetAllUsers")]
+        [HttpGet()]
         [Authorize(Roles = "Admin")]
        public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
         {

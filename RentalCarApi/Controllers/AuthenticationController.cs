@@ -8,6 +8,7 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using RentalCarCore.Utilities;
 
 namespace RentalCarCore.Controllers
 {
@@ -65,7 +66,7 @@ namespace RentalCarCore.Controllers
             }
         }
 
-        [Authorize]
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpPatch]
         [Route("Update-password")]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO updatePasswordDto)

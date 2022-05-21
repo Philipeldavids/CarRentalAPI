@@ -10,7 +10,7 @@ namespace RentalCarCore.Interfaces
 {
     public interface ITokenGen
     {
-        string GenerateToken(User user);
+        Task<string> GenerateToken(User user);
         string GenerateRefreshToken();
     }
 }
