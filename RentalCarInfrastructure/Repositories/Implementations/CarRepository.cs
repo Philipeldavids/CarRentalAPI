@@ -55,11 +55,15 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Car>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate)
         {
-            var carLocation = await _appDbContext.Dealers
+            var dealers = await _appDbContext.Dealers
                               .Include(x => x.Locations.Where(x => x.State == Location))
+                              .Include(x => x.Cars)
+                                .ThenInclude(x => x.Trips)
                               .ToListAsync();
 
-            
+
+
+            var cars = dealers.FindAll(x => x.Locations.Count > 0);
 
             return null;
 
