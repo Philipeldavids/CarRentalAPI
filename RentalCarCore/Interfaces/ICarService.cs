@@ -11,5 +11,6 @@ namespace RentalCarCore.Interfaces
         Task<Response<List<CarFeatureDTO>>> GetListOfFeatureCarsAsync();
         Task<Response<CarDetailsDTO>> GetCarDetailsAsync(string carId);
         Task<Response<PaginationModel<IEnumerable<CarResponseDto>>>> GetAllCarsAsync(int pageSize, int pageNumber);
+        Task<Response<PaginationModel<IEnumerable<CarOfferDto>>>> GetAllOfferCarsAsync(int pageSize, int pageNumber);
     }
 }

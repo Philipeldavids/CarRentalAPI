@@ -133,5 +133,30 @@ namespace RentalCarApi.Controllers
 
             }
         }
+
+        [HttpGet("GetAllOfferedCars")]
+        public async Task<IActionResult> GetAllOfferCars(int pageSize, int pageNumber)
+        {
+            try
+            {
+                var carOffer = await _carService.GetAllOfferCarsAsync(pageSize, pageNumber);
+                if (carOffer.IsSuccessful)
+                {
+                    return StatusCode((int)carOffer.ResponseCode, carOffer);
+                }
+
+                return BadRequest(carOffer);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+            }
+        }
     }
 }
