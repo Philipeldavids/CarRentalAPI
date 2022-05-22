@@ -63,7 +63,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
 
 
-            var cars = dealers.FindAll(x => x.Locations.Count > 0);
+            var locations = dealers.FindAll(x => x.Locations.Count > 0);
+
+            if(locations != null)
+            {
+                var cars = locations.Where(x => x.Cars.Select(x => x.Trips.Where(x => x.PickUpDate <= pickupDate && x.ReturnDate >= returnDate)));
+            }
 
             return null;
 

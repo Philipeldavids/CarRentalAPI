@@ -95,10 +95,11 @@ namespace RentalCarCore.Services
             };
         }
 
+
         public async Task<Response<IEnumerable<CarResponseDto>>> GetCarsBySearchAsync(string Location, DateTime pickupDate, DateTime returnDate)
         {
             var cars = await _uintOfWork.CarRepository.SearchCarByDateAndLocationAsync(Location, pickupDate, returnDate);
-            
+
             if (cars != null)
             {
                 var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars);
@@ -115,6 +116,30 @@ namespace RentalCarCore.Services
                 IsSuccessful = false,
                 Message = "Not Car Found",
                 ResponseCode = HttpStatusCode.NotFound,
+            };
+        }
+
+        public async Task<Response<PaginationModel<IEnumerable<CarOfferDto>>>> GetAllOfferCarsAsync(int pageSize, int pageNumber)
+        {
+            var cars = await _uintOfWork.CarRepository.GetAllOfferCarsAsync();
+            var carResponse = _mapper.Map<IEnumerable<CarOfferDto>>(cars);
+            if (cars != null)
+            {
+                var carResult = PaginationClass.PaginationAsync(carResponse, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<CarOfferDto>>>
+                {
+                    Data = carResult,
+                    IsSuccessful = true,
+                    Message = "List of Cars' Offers",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<CarOfferDto>>>
+            {
+                IsSuccessful = false,
+                Message = "Cars' Offers Not Found",
+                ResponseCode = HttpStatusCode.NoContent
+
             };
         }
     }
