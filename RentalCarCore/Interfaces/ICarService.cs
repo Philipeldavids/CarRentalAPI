@@ -8,7 +8,7 @@ namespace RentalCarCore.Interfaces
 {
     public interface ICarService
     {
-        Task<Response<List<CarDTO>>> GetListOfFeatureCarsAsync();
+        Task<Response<List<CarFeatureDTO>>> GetListOfFeatureCarsAsync();
         Task<Response<CarDetailsDTO>> GetCarDetailsAsync(string carId);
         Task<Response<PaginationModel<IEnumerable<CarResponseDto>>>> GetAllCarsAsync(int pageSize, int pageNumber);
     }

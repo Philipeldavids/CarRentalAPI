@@ -24,13 +24,13 @@ namespace RentalCarCore.Services
             _mapper = mapper;
         }
 
-        public async Task<Response<List<CarDTO>>> GetListOfFeatureCarsAsync()
+        public async Task<Response<List<CarFeatureDTO>>> GetListOfFeatureCarsAsync()
         {
             var car = await _uintOfWork.CarRepository.GetAllFeatureCarsAsync();
             if (car != null)
             {
-                var result = _mapper.Map<List<CarDTO>>(car);
-                return new Response<List<CarDTO>>()
+                var result = _mapper.Map<List<CarFeatureDTO>>(car);
+                return new Response<List<CarFeatureDTO>>()
                 {
                     Data = result,
                     IsSuccessful = true,
@@ -39,7 +39,7 @@ namespace RentalCarCore.Services
                 };
             }
 
-            return new Response<List<CarDTO>>()
+            return new Response<List<CarFeatureDTO>>()
             {
                 Data = null,
                 IsSuccessful = false,
