@@ -21,23 +21,26 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
         public async Task<IEnumerable<Car>> GetAllFeatureCarsAsync()
         {
-            var query = _appDbContext.Cars
+            var query =  await _appDbContext.Cars
                   .Include(x => x.CarDetails)
-                  .Include(i => i.Images)
-                  .Include(r => r.Ratings);
-            var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).Take(6).ToListAsync();
-            return cars;
+                  .Include(x => x.Images.Where(x => x.IsFeature == true))
+                  .Include(r => r.Ratings)
+                  .OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count + x.Ratings.Count).Take(6)
+                  .ToListAsync();
+                 
+            return query;
         }
 
-        public async Task<IEnumerable<Car>> GetCarDetailsAsync(string carId)
+        public async Task<Car> GetCarDetailsAsync(string carId)
         {
             var carDetails = await _appDbContext.Cars
                              .Include(x => x.CarDetails)
                              .Include(x => x.Images)
                              .Include(x => x.Ratings)
-                             .Include(x => x.Comments).Where(y => y.Id == carId).ToListAsync();
+                             .Include(x => x.Comments).Where(y => y.Id == carId).FirstOrDefaultAsync();
             return carDetails;
         }
+
         public async Task<IEnumerable<Car>> GetAllCarsAsync()
         {
             var query = await _appDbContext.Cars
@@ -74,14 +77,17 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
             var result = carLocation;
 
-            if (pickupDate < returnDate)
-            {
-                result = result.Where(r => r.Trips.FirstOrDefault(pickupDate);
-            }
-            if (carLocation.Where(d => d.Trips.Contains(pickupDate)){
 
-            }
+            //if (pickupDate < returnDate)
+            //{
+            //    result = result.Where(r => r.Trips.FirstOrDefault());
+            //}
+            //if (carLocation.Where(d => d.Trips.Contains(pickupDate))
+            //{
 
+            //}
+
+            return result;
 
         }
     }

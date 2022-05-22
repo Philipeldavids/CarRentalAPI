@@ -46,7 +46,7 @@ namespace RentalCarCore.Services
                 if (await _userManager.CheckPasswordAsync(user, userRequestDto.Password))
                 {
                     string refreshToken = _tokenGen.GenerateRefreshToken();
-                    string token = _tokenGen.GenerateToken(user);
+                    string token = await _tokenGen.GenerateToken(user);
                     user.RefreshToken = refreshToken;
                     user.ExpiryTime = DateTime.Now.AddDays(3);
 
@@ -120,7 +120,7 @@ namespace RentalCarCore.Services
             }
             var refreshMapping = new RefreshTokenResponse
             {
-                NewAccessToken = _tokenGen.GenerateToken(user),
+                NewAccessToken = await _tokenGen.GenerateToken(user),
                 NewRefreshToken = _tokenGen.GenerateRefreshToken()
             };
 

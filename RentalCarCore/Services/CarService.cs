@@ -24,13 +24,13 @@ namespace RentalCarCore.Services
             _mapper = mapper;
         }
 
-        public async Task<Response<List<CarDTO>>> GetListOfFeatureCarsAsync()
+        public async Task<Response<List<CarFeatureDTO>>> GetListOfFeatureCarsAsync()
         {
             var car = await _uintOfWork.CarRepository.GetAllFeatureCarsAsync();
             if (car != null)
             {
-                var result = _mapper.Map<List<CarDTO>>(car);
-                return new Response<List<CarDTO>>()
+                var result = _mapper.Map<List<CarFeatureDTO>>(car);
+                return new Response<List<CarFeatureDTO>>()
                 {
                     Data = result,
                     IsSuccessful = true,
@@ -39,7 +39,7 @@ namespace RentalCarCore.Services
                 };
             }
 
-            return new Response<List<CarDTO>>()
+            return new Response<List<CarFeatureDTO>>()
             {
                 Data = null,
                 IsSuccessful = false,
@@ -48,13 +48,13 @@ namespace RentalCarCore.Services
             };
         }
 
-        public async Task<Response<List<CarDetailsDTO>>> GetCarDetailsAsync(string carId)
+        public async Task<Response<CarDetailsDTO>> GetCarDetailsAsync(string carId)
         {
             var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(carId);
             if (car != null)
             {
-                var result = _mapper.Map<List<CarDetailsDTO>>(car);
-                return new Response<List<CarDetailsDTO>>()
+                var result = _mapper.Map<CarDetailsDTO>(car);
+                return new Response<CarDetailsDTO>()
                 {
                     Data = result,
                     IsSuccessful = true,
@@ -63,7 +63,7 @@ namespace RentalCarCore.Services
                 };
             }
 
-            return new Response<List<CarDetailsDTO>>()
+            return new Response<CarDetailsDTO>()
             {
                 Data = null,
                 IsSuccessful = false,

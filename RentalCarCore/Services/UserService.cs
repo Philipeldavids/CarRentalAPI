@@ -128,7 +128,7 @@ namespace RentalCarCore.Services
                 return new Response<string>
                 {
                     IsSuccessful = false,
-                    Message = "Trip not completed",
+                    Message = "Cannot rate this car",
                     ResponseCode = HttpStatusCode.BadRequest
                 };
 
@@ -166,7 +166,7 @@ namespace RentalCarCore.Services
                 return new Response<string>
                 {
                     IsSuccessful = false,
-                    Message = "Trip not Completed",
+                    Message = "Cannot comment on this car",
                     ResponseCode = HttpStatusCode.BadRequest
                 };
 

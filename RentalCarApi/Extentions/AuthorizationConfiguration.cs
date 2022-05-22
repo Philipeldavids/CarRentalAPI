@@ -37,11 +37,17 @@ namespace RentalCarApi.Extentions
             });
 
             services.AddAuthorization(options =>
-                    options.AddPolicy("RequireAdminOnly", policy => policy.RequireRole(UserRoles.Admin)))
-                .AddAuthorization(options => options.AddPolicy("RequireDealerOnly", policy => policy.RequireRole(UserRoles.Dealer)))
-                .AddAuthorization(options => options.AddPolicy("RequireCustomerOnly", policy => policy.RequireRole(UserRoles.Customer)))
-                .AddAuthorization(options => options.AddPolicy("RequireDealerAndCustomer", policy => policy.RequireRole(UserRoles.Dealer, UserRoles.Admin)));
+            {
+                options.AddPolicy("RequireAdminOnly", policy => policy.RequireRole(UserRoles.Admin));
+                options.AddPolicy("RequireDealerOnly", policy => policy.RequireRole(UserRoles.Dealer));
+                options.AddPolicy("RequireCustomerOnly", policy => policy.RequireRole(UserRoles.Customer));
+                options.AddPolicy("RequireDealerAndCustomer", policy => policy.RequireRole(UserRoles.Dealer, UserRoles.Admin));
+            });
+
+
         }
 
     }
+
 }
+ 
