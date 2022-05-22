@@ -40,6 +40,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                              .Include(x => x.Comments).Where(y => y.Id == carId).FirstOrDefaultAsync();
             return carDetails;
         }
+
         public async Task<IEnumerable<Car>> GetAllCarsAsync()
         {
             var query = await _appDbContext.Cars

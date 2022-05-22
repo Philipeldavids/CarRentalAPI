@@ -22,7 +22,18 @@ namespace RentalCarCore.Dtos.Response
         public bool IsVerify { get; set; }
         public string Ratings { get; set; }
         public int NoOfUserRated { get; set; }
-        public virtual CarDetail CarDetails { get; set; }
+        public string TypeOfSeat { get; set; }
+
+        public bool Sunroof { get; set; }
+        public bool Bluetooth { get; set; }
+        public bool NavigationSystem { get; set; }
+        public bool AirCondition { get; set; }
+        public bool RemoteStart { get; set; }
+        public bool BackUpcamera { get; set; }
+        public bool ThirdRowSeating { get; set; }
+        public bool Driver { get; set; }
+        public bool CarPlay { get; set; }
+        public bool IsTrack { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         

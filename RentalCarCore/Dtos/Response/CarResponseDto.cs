@@ -8,7 +8,7 @@
         public string YearOfMan { get; set; }
         public string ImageUrl { get; set; }
         public string Price { get; set; }
-        public int Count { get; set; }
+        public int NoOfPeople { get; set; }
         public string UnitOfPrice { get; set; }
     }
 }
