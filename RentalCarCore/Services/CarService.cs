@@ -94,5 +94,28 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.NoContent,
             };
         }
+
+        public async Task<Response<IEnumerable<CarResponseDto>>> GetCarsBySearchAsync(string Location, DateTime pickupDate, DateTime returnDate)
+        {
+            var cars = await _uintOfWork.CarRepository.SearchCarByDateAndLocationAsync(Location, pickupDate, returnDate);
+            
+            if (cars != null)
+            {
+                var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars);
+                return new Response<IEnumerable<CarResponseDto>>
+                {
+                    Data = carResponse,
+                    IsSuccessful = true,
+                    Message = "List of Cars Search",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<IEnumerable<CarResponseDto>>
+            {
+                IsSuccessful = false,
+                Message = "Not Car Found",
+                ResponseCode = HttpStatusCode.NotFound,
+            };
+        }
     }
 }

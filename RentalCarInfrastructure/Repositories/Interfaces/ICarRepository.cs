@@ -10,8 +10,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<IEnumerable<Car>> GetAllFeatureCarsAsync();
         Task<Car> GetCarDetailsAsync(string carId);
         Task<IEnumerable<Car>> GetAllCarsAsync();
-
-        Task<IEnumerable<Car>> GetCarByLocationAsync(Location state);
-        Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate);
+        Task<IEnumerable<Car>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate);
     }
 }
