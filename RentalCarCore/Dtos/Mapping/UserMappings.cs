@@ -55,6 +55,7 @@ namespace RentalCarCore.Dtos.Mapping
                 .ForMember(car => car.ThirdRowSeating, opt => opt.MapFrom(src => src.CarDetails.ThirdRowSeating))
             .ReverseMap();
 
+            // Get All Users
             CreateMap<User, GetAllUserResponsetDto>().ReverseMap();
 
             // Car listings
