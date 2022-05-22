@@ -31,13 +31,13 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return query;
         }
 
-        public async Task<IEnumerable<Car>> GetCarDetailsAsync(string carId)
+        public async Task<Car> GetCarDetailsAsync(string carId)
         {
             var carDetails = await _appDbContext.Cars
                              .Include(x => x.CarDetails)
                              .Include(x => x.Images)
                              .Include(x => x.Ratings)
-                             .Include(x => x.Comments).Where(y => y.Id == carId).ToListAsync();
+                             .Include(x => x.Comments).Where(y => y.Id == carId).FirstOrDefaultAsync();
             return carDetails;
         }
         public async Task<IEnumerable<Car>> GetAllCarsAsync()

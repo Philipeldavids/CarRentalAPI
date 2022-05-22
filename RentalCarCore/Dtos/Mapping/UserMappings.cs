@@ -23,11 +23,12 @@ namespace RentalCarCore.Dtos.Mapping
 
             CreateMap<Car,CarDTO>().ReverseMap();
             CreateMap<Car,CarDetailsDTO>()
-                .ForMember(car => car.Ratings, x => x.MapFrom(y => y.Ratings.Count == 0 ? 0 : (double)y.Ratings.Sum(car => car.Ratings))).ReverseMap();
+            .ForMember(car => car.Ratings, opt => opt.MapFrom(src => src.Ratings.Count == 0 ? 0 : (double)src.Ratings.Sum(car => car.Ratings) / ((double)src.Ratings.Count)))
+            .ForMember(car => car.NoOfUserRated, opt => opt.MapFrom(src => src.Ratings.Count)).ReverseMap();
 
             CreateMap<User, GetAllUserResponsetDto>().ReverseMap();
             CreateMap<Car, CarResponseDto>()
-                .ForMember(car => car.ImageUrl, opt => opt.MapFrom(src => src.Images.FirstOrDefault(gallery => gallery.IsFeature).ImageUrl))
+                .ForMember(car => car.ImageUrl, opt => opt.MapFrom(src => src.Images.FirstOrDefault().ImageUrl))
                 .ForMember(car => car.Rating, opt => opt.MapFrom(src => src.Ratings.Count == 0 ? 0 : (double)src.Ratings.Sum(car => car.Ratings) / ((double)src.Ratings.Count)))
                 .ForMember(car => car.Count, opt => opt.MapFrom(src => src.Ratings.Count)).ReverseMap();
         }

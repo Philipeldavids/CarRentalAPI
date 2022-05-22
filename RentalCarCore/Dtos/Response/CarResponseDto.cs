@@ -2,13 +2,13 @@
 {
     public class CarResponseDto
     {
-        public decimal Amount { get; set; }
+        public string Id { get; set; }
         public int Rating { get; set; }
         public string Model { get; set; }
-        public int Year { get; set; }
-        public bool IsFeatured { get; set; }
+        public string YearOfMan { get; set; }
         public string ImageUrl { get; set; }
         public string Price { get; set; }
         public int Count { get; set; }
+        public string UnitOfPrice { get; set; }
     }
 }

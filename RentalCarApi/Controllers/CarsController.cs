@@ -71,7 +71,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [HttpGet("GetAllCars")]
+        [HttpGet()]
         public async Task<IActionResult> GetAllCars(int pageSize, int pageNumber)
         {
             var carResponse = await _carService.GetAllCarsAsync(pageSize, pageNumber);
