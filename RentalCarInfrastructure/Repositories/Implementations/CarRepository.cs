@@ -67,11 +67,24 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
             if(locations != null)
             {
-                var cars = locations.Where(x => x.Cars.Select(x => x.Trips.Where(x => x.PickUpDate <= pickupDate && x.ReturnDate >= returnDate)));
+                //var cars = locations.Where(x => x.Cars.Select(x => x.Trips.Where(x => x.PickUpDate <= pickupDate && x.ReturnDate >= returnDate)));
             }
 
             return null;
 
+        }
+
+
+        public async Task<IEnumerable<Car>> GetAllOfferCarsAsync()
+        {
+            var query = _appDbContext.Cars
+                .Where(x => x.Images.Count > 0)
+                .Include(x => x.Images.Where(x => x.IsFeature == true))
+                .Include(x => x.Offers.Where(x => x.IsActive == true))
+                .Include(x => x.CarDetails)
+                .Include(x => x.Ratings);
+            var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).ToListAsync();
+            return cars;
         }
     }
 }
