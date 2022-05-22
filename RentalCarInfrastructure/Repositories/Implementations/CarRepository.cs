@@ -77,6 +77,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
             var result = carLocation;
 
+
             //if (pickupDate < returnDate)
             //{
             //    result = result.Where(r => r.Trips.FirstOrDefault());
@@ -87,6 +88,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             //}
 
             return result;
+
         }
     }
 }
