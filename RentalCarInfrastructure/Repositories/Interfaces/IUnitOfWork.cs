@@ -16,7 +16,9 @@ namespace RentalCarInfrastructure.Interfaces
 
         ICommentRepository CommentRepository { get; }   
 
-        ICarRepository CarRepository { get; }   
+        ICarRepository CarRepository { get; }
+
+        IRatingRepository RatingRepository { get; }
 
     }
 }

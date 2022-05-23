@@ -89,7 +89,7 @@ namespace RentalCarApi.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    var result = await _userService.AddRating(ratingDto);
+                    var result = await _carService.AddRating(ratingDto);
                     return Ok(result);
                 }
                 return BadRequest(ModelState);
@@ -116,7 +116,7 @@ namespace RentalCarApi.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    var result = await _userService.AddComment(commentDto);
+                    var result = await _carService.AddComment(commentDto);
                     return Ok(result);
                 }
                 return BadRequest(ModelState);
@@ -134,6 +134,36 @@ namespace RentalCarApi.Controllers
             }
         }
 
+
+        [HttpGet("SearchCars")]
+        public async Task<IActionResult> GetSearchCars(string state, DateTime pickupDate, DateTime returnDate)
+        {
+            try
+            {
+                var result = await _carService.GetCarsBySearchAsync(state, pickupDate, returnDate);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+
+            }
+        }
+
+
         [HttpGet("GetAllOfferedCars")]
         public async Task<IActionResult> GetAllOfferCars(int pageSize, int pageNumber)
         {
@@ -146,6 +176,7 @@ namespace RentalCarApi.Controllers
                 }
 
                 return BadRequest(carOffer);
+
             }
             catch (ArgumentException ex)
             {
@@ -155,7 +186,9 @@ namespace RentalCarApi.Controllers
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
+
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+
             }
         }
     }

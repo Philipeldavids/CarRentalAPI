@@ -9,11 +9,12 @@ namespace RentalCarCore.Dtos.Response
 {
     public class TripsDTO
     {
+        public string Id { get; set; }
         public string CarId { get; set; }
         public string UserId { get; set; }
         public string Status { get; set; }
         public DateTime PickUpDate { get; set; }
         public DateTime ReturnDate { get; set; }
-        public Transaction Transactions { get; set; }
+        
     }
 }

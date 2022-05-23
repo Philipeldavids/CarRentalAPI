@@ -19,7 +19,6 @@ namespace RentalCarCore.Dtos.Request
         public string LastName { get; set; }
 
         [Required]
-        [EmailAddress]
         [StringLength(50, MinimumLength = 2, ErrorMessage = DataAnnotationsHelper.PhoneNumberValidator)]
         public string PhoneNumber { get; set; }
 

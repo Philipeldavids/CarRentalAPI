@@ -9,6 +9,7 @@ namespace RentalCarCore.Dtos.Request
 {
     public class RatingDto
     {
+        public string TripId { get; set; }
         public string UserId { get; set; }
         public string CarId { get; set; }
         [Range(1, 5, ErrorMessage = "Rating Must be between 1 to 5")]

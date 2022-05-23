@@ -29,6 +29,7 @@ namespace RentalCarCore.Dtos.Response
         public bool CarPlay { get; set; }
         public bool IsTrack { get; set; }
 
+
         public string ImageUrl { get; set; }
     }
 }

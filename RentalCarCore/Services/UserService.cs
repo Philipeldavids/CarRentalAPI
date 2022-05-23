@@ -70,32 +70,32 @@ namespace RentalCarCore.Services
 
         public async Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto)
         {
-            var user = _unitOfWork.UserRepository.GetUser(Id);
+            var user = await _unitOfWork.UserRepository.GetUser(Id);
 
             if (user != null)
             {
 
-                var result = await _unitOfWork.UserRepository.UpdateUser(new User()
-                {
-                    FirstName = string.IsNullOrWhiteSpace(updateUserDto.FirstName) ? updateUserDto.FirstName : updateUserDto.FirstName,
-                    LastName = string.IsNullOrWhiteSpace(updateUserDto.LastName) ? updateUserDto.LastName : updateUserDto.LastName,
-                    Address = string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber) ? updateUserDto.PhoneNumber : updateUserDto.PhoneNumber,
-                    PhoneNumber = string.IsNullOrWhiteSpace(updateUserDto.Address) ? updateUserDto.Address : updateUserDto.Address,
-
-                });
+                user.FirstName = updateUserDto.FirstName;
+                user.LastName = updateUserDto.LastName;
+                user.PhoneNumber = updateUserDto.PhoneNumber;
+                user.Address = updateUserDto.Address;
+                var result = await _unitOfWork.UserRepository.UpdateUser(user);
 
                 if (result)
                 {
                     return new Response<string>()
                     {
                         IsSuccessful = true,
-                        Message = "Profile updated"
+                        Message = "Profile updated",
+                        ResponseCode = HttpStatusCode.OK
+
                     };
                 }
                 return new Response<string>()
                 {
                     IsSuccessful = false,
-                    Message = "Profile not updated"
+                    Message = "Profile not updated",
+                    ResponseCode = HttpStatusCode.BadRequest
                 };
             }
 
@@ -103,82 +103,7 @@ namespace RentalCarCore.Services
         }
 
 
-        public async Task<Response<string>> AddRating(RatingDto ratingDto)
-        {
-            var user = await _unitOfWork.UserRepository.GetUser(ratingDto.UserId);
-            var trips = await _unitOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
-            var trip = trips.FirstOrDefault(x => x.CarId == ratingDto.CarId);
-
-            if (user != null)
-            {
-                if(trip != null)
-                {
-                    var rate = _mapper.Map<Rating>(ratingDto);
-                    var result = await _ratingRepository.Add(rate);
-                    if (result)
-                    {
-                        return new Response<string>
-                        {
-                            IsSuccessful = true,
-                            Message = "Response Successfull",
-                            ResponseCode = HttpStatusCode.OK
-                        };
-                    }
-                }
-                return new Response<string>
-                {
-                    IsSuccessful = false,
-                    Message = "Cannot rate this car",
-                    ResponseCode = HttpStatusCode.BadRequest
-                };
-
-            }
-
-            return new Response<string>
-            {
-                IsSuccessful = false,
-                Message = "Response NotSuccessful",
-                ResponseCode = HttpStatusCode.BadRequest
-            };
-        }
-
-        public async Task<Response<string>> AddComment(CommentDto commentDto)
-        {
-            var user = await _unitOfWork.UserRepository.GetUser(commentDto.UserId);
-            var trips = await _unitOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
-            var trip = trips.FirstOrDefault(x => x.CarId == commentDto.CarId);
-            if (user != null)
-            {
-                if (trip != null)
-                {
-                    var comment = _mapper.Map<Comment>(commentDto);
-                    var result = await _unitOfWork.CommentRepository.AddComment(comment);
-                    if (result)
-                    {
-                        return new Response<string>
-                        {
-                            IsSuccessful = true,
-                            Message = "Comment Added Successfully",
-                            ResponseCode = HttpStatusCode.OK
-                        };
-                    }
-                }
-                return new Response<string>
-                {
-                    IsSuccessful = false,
-                    Message = "Cannot comment on this car",
-                    ResponseCode = HttpStatusCode.BadRequest
-                };
-
-            }
-            return new Response<string>
-            {
-                IsSuccessful = false,
-                Message = "Comment Not Successfull",
-                ResponseCode = HttpStatusCode.BadRequest
-            };
-
-        }
+        
         public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
         {
             User user = await _unitOfWork.UserRepository.GetUser(userId);
