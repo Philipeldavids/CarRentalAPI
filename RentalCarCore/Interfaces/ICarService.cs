@@ -18,5 +18,8 @@ namespace RentalCarCore.Interfaces
 
         Task<Response<PaginationModel<IEnumerable<CarOfferDto>>>> GetAllOfferCarsAsync(int pageSize, int pageNumber);
 
+        Task<Response<string>> AddRating(RatingDto ratingDto);
+        Task<Response<string>> AddComment(CommentDto commentDto);
+
     }
 }

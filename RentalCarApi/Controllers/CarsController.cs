@@ -89,7 +89,7 @@ namespace RentalCarApi.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    var result = await _userService.AddRating(ratingDto);
+                    var result = await _carService.AddRating(ratingDto);
                     return Ok(result);
                 }
                 return BadRequest(ModelState);
@@ -116,7 +116,7 @@ namespace RentalCarApi.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    var result = await _userService.AddComment(commentDto);
+                    var result = await _carService.AddComment(commentDto);
                     return Ok(result);
                 }
                 return BadRequest(ModelState);
