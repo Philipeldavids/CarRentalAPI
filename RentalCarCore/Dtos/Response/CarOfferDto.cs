@@ -9,7 +9,6 @@ namespace RentalCarCore.Dtos.Response
 {
     public class CarOfferDto
     {
-        public decimal Amount { get; set; }
         public int Rating { get; set; }
         public string Model { get; set; }
         public int Year { get; set; }

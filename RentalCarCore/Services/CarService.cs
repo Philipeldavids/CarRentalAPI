@@ -102,7 +102,7 @@ namespace RentalCarCore.Services
 
             if (cars != null)
             {
-                var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars);
+                var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars.Keys);
                 return new Response<IEnumerable<CarResponseDto>>
                 {
                     Data = carResponse,

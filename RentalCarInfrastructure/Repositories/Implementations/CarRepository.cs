@@ -48,27 +48,54 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                 .Include(x => x.Images.Where(x => x.IsFeature == true))
                 .Include(x => x.Ratings)
                 .ToListAsync();
+
+            
             return query;
         }
 
         
 
-        public async Task<IEnumerable<Car>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate)
+        public async Task<Dictionary<Car, bool>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate)
         {
             var dealers = await _appDbContext.Dealers
                               .Include(x => x.Locations.Where(x => x.State == Location))
                               .Include(x => x.Cars)
                                 .ThenInclude(x => x.Trips)
+  
                               .ToListAsync();
 
 
 
-            var locations = dealers.FindAll(x => x.Locations.Count > 0);
-
-            if(locations != null)
+            if(dealers != null)
             {
-                //var cars = locations.Where(x => x.Cars.Select(x => x.Trips.Where(x => x.PickUpDate <= pickupDate && x.ReturnDate >= returnDate)));
+                var locations = dealers.FindAll(x => x.Locations.Count > 0);
+                
+                List<Car> cars = new List<Car>();
+
+                Dictionary<Car, bool> result = new Dictionary<Car, bool> ();
+
+                foreach (var item in locations)
+                {
+                    cars.AddRange(item.Cars);
+                }
+
+                foreach (var item in cars)
+                {
+                    var trip = item.Trips.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+                    if (trip.PickUpDate <= pickupDate && trip.ReturnDate >= returnDate)
+                    {
+                        result[item] = false;
+                    }
+                    else
+                    {
+                        result[item] = true;
+                    }
+                }
+
+                return result;
+
             }
+
 
             return null;
 

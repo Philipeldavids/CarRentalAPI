@@ -417,8 +417,8 @@
             "Id": "d2a20262-8dcb-4890-82e8-510ebd6334ef",
             "UserId": "eacdea38-c41b-434b-8f4d-b0974f100ded",
             "Status": "Pending",
-            "PickupDate": "2019-01-07",
-            "ReturnDate": "2019-01-21",
+            "PickupDate": "2022-05-26",
+            "ReturnDate": "2022-05-28",
             "CreatedAt": "2018-05-06",
             "Transactions": {
               "Id": "9047c6da-25d2-4540-8c03-94cdbf0f596c",
@@ -544,8 +544,8 @@
             "Id": "589e7d64-6b31-432b-b6ae-5fd2aecda9c2",
             "UserId": "0b2d859b-8de2-48b1-afc1-270679270ccf",
             "Status": "Pending",
-            "PickupDate": "2019-02-07",
-            "ReturnDate": "2019-02-21",
+            "PickupDate": "2022-05-26",
+            "ReturnDate": "2022-05-30",
             "CreatedAt": "2018-05-06",
             "Transactions": {
               "Id": "29b0703e-dfbf-4583-ae7a-fb6f3c0c00b2",
@@ -986,14 +986,14 @@
         ],
         "Trips": [
           {
-            
+
             "UserId": "27e9e275-adde-4b6d-881c-6397b46a9020",
             "Status": "Done",
-            "PickupDate": "2016-03-21",
-            "ReturnDate": "2016-03-30",
+            "PickupDate": "2022-05-26",
+            "ReturnDate": "2022-05-28",
             "CreatedAt": "2016-03-16",
             "Transactions": {
-              
+
               "Amount": 120000.0,
               "PaymentMethod": "Paystack",
               "TransactionRef": "29ce9c2e-5e19-4e74-a4d6-540d35439fea",
@@ -1132,8 +1132,8 @@
             "Id": "6d3f5a4b-c0f3-493d-8b04-1cc39044dab1",
             "UserId": "f40276cc-ce31-474a-8a7e-a697ca82574b",
             "Status": "Done",
-            "PickupDate": "2016-07-21",
-            "ReturnDate": "2016-07-30",
+            "PickupDate": "2022-05-26",
+            "ReturnDate": "2022-05-28",
             "CreatedAt": "2016-07-16",
             "Transactions": {
               "Id": "ec33b39d-079b-4e08-b5f8-59868c4cc55c",
@@ -1271,14 +1271,14 @@
         ],
         "Trips": [
           {
-            
+
             "UserId": "d7c29369-929b-4426-b54d-04b5f1560b50",
             "Status": "Done",
-            "PickupDate": "2016-03-21",
-            "ReturnDate": "2016-03-30",
+            "PickupDate": "2022-05-26",
+            "ReturnDate": "2022-05-30",
             "CreatedAt": "2016-03-16",
             "Transactions": {
-              
+
               "Amount": 10000.0,
               "PaymentMethod": "Paystack",
               "TransactionRef": "29bb9c2e-5e19-4e74-a4d6-540d35439erf",
@@ -1414,14 +1414,14 @@
             }
           },
           {
-           
+
             "UserId": "2f05f94f-1d59-4078-ae13-0d39f068bb5d",
             "Status": "Done",
-            "PickupDate": "2018-07-21",
-            "ReturnDate": "2018-07-30",
+            "PickupDate": "2022-05-24",
+            "ReturnDate": "2022-05-28",
             "CreatedAt": "2018-07-16",
             "Transactions": {
-              
+
               "Amount": 26000.0,
               "PaymentMethod": "Flutterwave",
               "TransactionRef": "29bb9c2e-5e19-4e43-a4d6-540d35439fea",
