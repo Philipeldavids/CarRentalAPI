@@ -168,7 +168,7 @@ namespace RentalCarCore.Services
         {
             var user = await _uintOfWork.UserRepository.GetUser(ratingDto.UserId);
             var trips = await _uintOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
-            var trip = trips.FirstOrDefault(x => x.CarId == ratingDto.CarId);
+            var trip = trips.Where(x => x.Id == ratingDto.TripId && x.Status == "Done");
 
             if (user != null)
             {
@@ -207,7 +207,7 @@ namespace RentalCarCore.Services
         {
             var user = await _uintOfWork.UserRepository.GetUser(commentDto.UserId);
             var trips = await _uintOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
-            var trip = trips.FirstOrDefault(x => x.CarId == commentDto.CarId);
+            var trip = trips.Where(x => x.Id == commentDto.TripId && x.Status == "Done");
             if (user != null)
             {
                 if (trip != null)

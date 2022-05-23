@@ -70,32 +70,32 @@ namespace RentalCarCore.Services
 
         public async Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto)
         {
-            var user = _unitOfWork.UserRepository.GetUser(Id);
+            var user = await _unitOfWork.UserRepository.GetUser(Id);
 
             if (user != null)
             {
 
-                var result = await _unitOfWork.UserRepository.UpdateUser(new User()
-                {
-                    FirstName = string.IsNullOrWhiteSpace(updateUserDto.FirstName) ? updateUserDto.FirstName : updateUserDto.FirstName,
-                    LastName = string.IsNullOrWhiteSpace(updateUserDto.LastName) ? updateUserDto.LastName : updateUserDto.LastName,
-                    Address = string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber) ? updateUserDto.PhoneNumber : updateUserDto.PhoneNumber,
-                    PhoneNumber = string.IsNullOrWhiteSpace(updateUserDto.Address) ? updateUserDto.Address : updateUserDto.Address,
-
-                });
+                user.FirstName = updateUserDto.FirstName;
+                user.LastName = updateUserDto.LastName;
+                user.PhoneNumber = updateUserDto.PhoneNumber;
+                user.Address = updateUserDto.Address;
+                var result = await _unitOfWork.UserRepository.UpdateUser(user);
 
                 if (result)
                 {
                     return new Response<string>()
                     {
                         IsSuccessful = true,
-                        Message = "Profile updated"
+                        Message = "Profile updated",
+                        ResponseCode = HttpStatusCode.OK
+
                     };
                 }
                 return new Response<string>()
                 {
                     IsSuccessful = false,
-                    Message = "Profile not updated"
+                    Message = "Profile not updated",
+                    ResponseCode = HttpStatusCode.BadRequest
                 };
             }
 

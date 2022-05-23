@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RentalCarInfrastructure.Models;
 
 namespace RentalCarCore.Dtos.Response
 {
@@ -14,7 +15,8 @@ namespace RentalCarCore.Dtos.Response
         public string PhoneNumber { get; set; }
         public string Address { get; set; }
         public string Avatar { get; set; }
-        public string Comment { get; set; }
-        public string CreatedAt { get; set; }
+        
+
+       
     }
 }

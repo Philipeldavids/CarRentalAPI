@@ -14,9 +14,12 @@ namespace RentalCarCore.Dtos.Mapping
     {
         public UserMappings()
         {
+            // Users
             CreateMap<User, UserResponseDto>().ReverseMap();
             CreateMap<RegistrationDto, User>().ReverseMap();
             CreateMap<Trip, TripsDTO>().ReverseMap();
+
+            CreateMap<UserDetailResponseDTO, User>().ReverseMap();
 
             CreateMap<Rating, RatingDto>().ReverseMap();
             CreateMap<Comment, CommentDto>().ReverseMap();

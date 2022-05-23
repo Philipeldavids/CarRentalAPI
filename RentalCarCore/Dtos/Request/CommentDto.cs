@@ -8,6 +8,7 @@ namespace RentalCarCore.Dtos.Request
 {
     public class CommentDto
     {
+        public string TripId { get; set; }
         public string UserId { get; set; }
         public string CarId { get; set; }
         public string Comments { get; set; }
