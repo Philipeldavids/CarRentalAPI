@@ -61,8 +61,11 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                               .Include(x => x.Locations.Where(x => x.State == Location))
                               .Include(x => x.Cars)
                                 .ThenInclude(x => x.Trips)
-  
-                              .ToListAsync();
+                              .Include(x => x.Cars)
+                                .ThenInclude(x => x.Ratings)
+                              .Include(x => x.Cars)
+                                .ThenInclude(x => x.Images)
+                                .ToListAsync();
 
 
 

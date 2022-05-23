@@ -96,14 +96,34 @@ namespace RentalCarCore.Services
         }
 
 
-        public async Task<Response<IEnumerable<CarResponseDto>>> GetCarsBySearchAsync(string Location, DateTime pickupDate, DateTime returnDate)
+        public async Task<Response<IEnumerable<CarSearchDto>>> GetCarsBySearchAsync(string Location, DateTime pickupDate, DateTime returnDate)
         {
             var cars = await _uintOfWork.CarRepository.SearchCarByDateAndLocationAsync(Location, pickupDate, returnDate);
 
             if (cars != null)
             {
-                var carResponse = _mapper.Map<IEnumerable<CarResponseDto>>(cars.Keys);
-                return new Response<IEnumerable<CarResponseDto>>
+                var carResponse = new List<CarSearchDto>();
+                foreach (var item in cars)
+                {
+                    var resp = new CarSearchDto()
+                    {
+                        Id = item.Key.Id,
+                        Rating = item.Key.Ratings.Sum(x => x.Ratings) / item.Key.Ratings.Count,
+                        Model = item.Key.Model,
+                        YearOfMan = item.Key.YearOfMan,
+                        Price = item.Key.Price,
+                        NoOfPeople = item.Key.Ratings.Count,
+                        UnitOfPrice = item.Key.UnitOfPrice,
+                        ImageUrl = item.Key.Images.Select(x => x.ImageUrl).FirstOrDefault(),
+                        Avaliabilty = item.Value
+
+                    };
+
+                    carResponse.Add(resp);
+                }
+                    
+                
+                return new Response<IEnumerable<CarSearchDto>>
                 {
                     Data = carResponse,
                     IsSuccessful = true,
@@ -111,7 +131,7 @@ namespace RentalCarCore.Services
                     ResponseCode = HttpStatusCode.OK
                 };
             }
-            return new Response<IEnumerable<CarResponseDto>>
+            return new Response<IEnumerable<CarSearchDto>>
             {
                 IsSuccessful = false,
                 Message = "Not Car Found",

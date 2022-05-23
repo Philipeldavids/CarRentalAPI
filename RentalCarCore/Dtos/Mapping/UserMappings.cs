@@ -70,6 +70,8 @@ namespace RentalCarCore.Dtos.Mapping
                 .ForMember(car => car.ImageUrl, opt => opt.MapFrom(src => src.Images.Select(x => x.ImageUrl).FirstOrDefault()))
                 .ForMember(car => car.Rating, opt => opt.MapFrom(src => src.Ratings.Count == 0 ? 0 : (double)src.Ratings.Sum(car => car.Ratings) / ((double)src.Ratings.Count)))
                 .ForMember(car => car.NoOfPeople, opt => opt.MapFrom(src => src.Ratings.Count)).ReverseMap();
+
+            
         }
     }
 }
