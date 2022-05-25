@@ -191,5 +191,55 @@ namespace RentalCarApi.Controllers
 
             }
         }
+
+        [HttpPost("PaymentForCarTrip")]
+        public async Task<IActionResult> MakeCarPayment(PaymentRequestDTO request)
+        {
+            try
+            {
+                var result = await _userService.UserPayment(request);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+            }
+        }
+
+        [HttpPost("verifypayment")]
+        public async Task<IActionResult> ConfirmPayment(string reference)
+        {
+            try
+            {
+                var result = await _userService.VerifyPayment(reference);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+            }
+        }
     }
 }
