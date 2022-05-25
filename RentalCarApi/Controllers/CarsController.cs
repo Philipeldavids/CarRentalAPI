@@ -191,5 +191,35 @@ namespace RentalCarApi.Controllers
 
             }
         }
+
+        [HttpPost("BookTrip")]
+        public async Task<IActionResult> BookTrip(TripBookingRequestDTO tripRequest)
+        {
+          
+            try
+            {
+                var trip = await _carService.BookTripAsync(tripRequest);
+                if (trip.IsSuccessful)
+                {
+                    return Ok(trip);
+                }
+
+                return BadRequest(trip);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+
+            }
+
+        }
     }
 }

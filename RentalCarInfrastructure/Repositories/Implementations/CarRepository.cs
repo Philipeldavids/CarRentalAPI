@@ -19,6 +19,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             _appDbContext = appDbContext;
         }
 
+
         public async Task<IEnumerable<Car>> GetAllFeatureCarsAsync()
         {
             var query =  await _appDbContext.Cars
@@ -99,9 +100,15 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
             }
 
-
             return null;
 
+        }
+
+        public async Task<Trip> GetACarTripAsync(string carId)
+        {
+            var query = await _appDbContext.Trips
+                 .Where(x => x.CarId == carId && x.Status == "Pending").FirstOrDefaultAsync();
+            return query;
         }
 
 

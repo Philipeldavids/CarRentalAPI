@@ -240,5 +240,47 @@ namespace RentalCarCore.Services
             };
 
         }
+
+        public async Task<Response<Trip>> BookTripAsync(TripBookingRequestDTO tripRequest)
+        {
+            var available = await _uintOfWork.CarRepository.GetACarTripAsync(tripRequest.CarId);
+            if (available != null)
+            {
+                return new Response<Trip>
+                {
+                    Data = available,
+                    IsSuccessful = false,
+                    Message = "Car not available",
+                    ResponseCode = HttpStatusCode.BadRequest
+                };
+            }
+            var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(tripRequest.CarId);
+            var user = await _uintOfWork.UserRepository.GetUser(tripRequest.UserId);
+            if(user != null && car != null)
+            {
+                var trip = new Trip()
+                {
+                    PickUpDate = DateTime.Now,
+                    ReturnDate = DateTime.Now,
+                    CarId = car.Id,
+                    UserId = user.Id,
+                    Status = "Pending"
+                };
+                await _uintOfWork.TripRepository.BookATrip(trip);
+                return new Response<Trip>
+                {
+                    Data = trip,
+                    IsSuccessful = true,
+                    Message = "Successful",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<Trip>
+            {
+                IsSuccessful = false,
+                Message = "NotSuccessful",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
     }
 }
