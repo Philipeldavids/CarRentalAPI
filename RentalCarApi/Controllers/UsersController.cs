@@ -147,5 +147,30 @@ namespace RentalCarApi.Controllers
             var response = await _userService.GetUsersAsync(pageSize, pageNumber);
             return StatusCode((int)response.ResponseCode, response);
         }
+
+        [HttpGet("GetAllDealers")]
+        public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var res = await _userService.GetAllDealersAsync(pageSize, pageNumber);
+                    return StatusCode((int)res.ResponseCode, res);
+                }
+                return BadRequest(ModelState);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after some time");
+            }
+        }
     }
 }
