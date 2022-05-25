@@ -74,6 +74,10 @@ namespace RentalCarCore.Dtos.Mapping
                 .ForMember(car => car.Rating, opt => opt.MapFrom(src => src.Ratings.Count == 0 ? 0 : (double)src.Ratings.Sum(car => car.Ratings) / ((double)src.Ratings.Count)))
                 .ForMember(car => car.NoOfPeople, opt => opt.MapFrom(src => src.Ratings.Count)).ReverseMap();
 
+            // Dealer listings
+
+            CreateMap<Dealer, GetAllDealerResponseDto>().ReverseMap();
+
             
         }
     }
