@@ -148,6 +148,25 @@ namespace RentalCarCore.Services
                 IsSuccessful = false
             };
         }
+
+        public async Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber)
+        {
+            var dealers = await _unitOfWork.DealerRepository.GetDealersAsync();
+            var response = _mapper.Map<IEnumerable<GetAllDealerResponseDto>>(dealers);
+            if(dealers != null)
+            {
+                var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
+                {
+                    Data = res,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
+            {
+                ResponseCode = HttpStatusCode.NoContent,
+            };
+        }
     }
 }
 
