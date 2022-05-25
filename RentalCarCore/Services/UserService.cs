@@ -154,7 +154,52 @@ namespace RentalCarCore.Services
                 IsSuccessful = false
             };
         }
+        public async Task<Response<PaymentResponseDTO>> UserPayment(PaymentRequestDTO pay)
+        {
+            var trip = await _unitOfWork.TripRepository.GetCarTrip(pay.TripId);
+            if (trip != null)
+            {
+                TransactionInitializeRequest request = new()
+                {
+                    AmountInKobo = pay.Amount * 100,
+                    Email = pay.Email,
+                    Reference = GenerateReference(),
+                    Currency = "NGN",
+                    CallbackUrl = ""
+                };
+                TransactionInitializeResponse transResponse = payStackApi.Transactions.Initialize(request);
+                if (transResponse.Status)
+                {
+                    var trans = TransactionMapping.GetTransaction(pay, request.Reference, trip.Id);
+                    await _unitOfWork.TransactionRepository.AddTransaction(trans);
+                    var result = TransactionMapping.GetPayment(trans, transResponse.Data.AuthorizationUrl);
+                    return new Response<PaymentResponseDTO>
+                    {
+                        Data = result,
+                        IsSuccessful = true,
+                        Message = transResponse.Message,
+                        ResponseCode = HttpStatusCode.OK
+                    };
+                }
+                return new Response<PaymentResponseDTO>
+                {
+                    Data = null,
+                    IsSuccessful = false,
+                    Message = transResponse.Message,
+                    ResponseCode = HttpStatusCode.BadRequest
+                };
+            }
 
+            return new Response<PaymentResponseDTO>
+            {
+                Data = null,
+                IsSuccessful = false,
+                Message = "Trip Not Found",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
+
+<<<<<<< Updated upstream
         public async Task<Response<PaymentResponseDTO>> UserPayment(PaymentRequestDTO pay)
         {
             var trip = await _unitOfWork.TripRepository.GetCarTrip(pay.TripId);
@@ -240,22 +285,45 @@ namespace RentalCarCore.Services
         }
 
         public async Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber)
+=======
+        public async Task<Response<string>> VerifyPayment(string reference)
+>>>>>>> Stashed changes
         {
-            var dealers = await _unitOfWork.DealerRepository.GetDealersAsync();
-            var response = _mapper.Map<IEnumerable<GetAllDealerResponseDto>>(dealers);
-            if(dealers != null)
+            TransactionVerifyResponse response = payStackApi.Transactions.Verify(reference);
+            if (response.Data.Status == "success")
             {
-                var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
-                return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
+                var trans = _unitOfWork.TransactionRepository.GetTransactionReference(reference);
+                if (trans != null)
                 {
-                    Data = res,
-                    ResponseCode = HttpStatusCode.OK
+                    trans.Status = "success";
+                    await _unitOfWork.TransactionRepository.UpdateTransaction(trans);
+                    return new Response<string>
+                    {
+                        IsSuccessful = true,
+                        Message = response.Data.Status,
+                        ResponseCode = HttpStatusCode.OK
+                    };
+                }
+                return new Response<string>
+                {
+                    IsSuccessful = false,
+                    Message = "Transaction not Found",
+                    ResponseCode = HttpStatusCode.BadRequest
                 };
             }
-            return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
+
+            return new Response<string>
             {
-                ResponseCode = HttpStatusCode.NoContent,
+                IsSuccessful = false,
+                Message = "unsuccessful",
+                ResponseCode = HttpStatusCode.BadRequest
             };
+        }
+
+        private static string GenerateReference()
+        {
+            Random random = new Random((int)DateTime.Now.Ticks);
+            return random.Next(100000000, 999999999).ToString();
         }
     }
 }
