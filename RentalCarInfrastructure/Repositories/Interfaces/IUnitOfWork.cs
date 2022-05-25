@@ -20,5 +20,7 @@ namespace RentalCarInfrastructure.Interfaces
 
         IRatingRepository RatingRepository { get; }
         ITransactionRepository TransactionRepository { get; }
+
+        IDealerRepository DealerRepository { get; }
     }
 }
