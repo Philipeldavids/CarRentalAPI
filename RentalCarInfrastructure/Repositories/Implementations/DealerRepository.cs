@@ -15,7 +15,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         {
         }
 
-        public async Task<List<Dealer>> GetDealersAsync()
+        public async Task<List<Dealer>> GetDealersAsync(string location)
         {
             var dealers = await GetAllRecord();
             return (List<Dealer>)dealers;

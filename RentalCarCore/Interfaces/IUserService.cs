@@ -18,6 +18,6 @@ namespace RentalCarCore.Interfaces
 
         Task<Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>> GetUsersAsync(int pageSize, int pageNumber);
 
-        Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber);
+        Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber, string location);
     }
 }
