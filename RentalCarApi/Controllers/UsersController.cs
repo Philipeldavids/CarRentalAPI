@@ -148,7 +148,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)response.ResponseCode, response);
         }
 
-        [HttpGet("page")]
+        [HttpGet("GetAllDealers")]
         public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber)
         {
             try
