@@ -149,13 +149,13 @@ namespace RentalCarApi.Controllers
         }
 
         [HttpGet("page")]
-        public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber, string location)
+        public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var res = await _userService.GetAllDealersAsync(pageSize, pageNumber, location);
+                    var res = await _userService.GetAllDealersAsync(pageSize, pageNumber);
                     return StatusCode((int)res.ResponseCode, res);
                 }
                 return BadRequest(ModelState);

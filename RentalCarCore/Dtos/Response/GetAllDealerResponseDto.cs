@@ -17,5 +17,11 @@ namespace RentalCarCore.Dtos.Response
 
         public string IdentityNumber { get; set; }
         public string SocialMedia { get; set; }
+
+        public string Address { get; set; }
+
+        public string State { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
     }
 }

@@ -9,6 +9,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
 {
     public interface IDealerRepository
     {
-        Task<List<Dealer>> GetDealersAsync(string location);
+        Task<List<Dealer>> GetDealersAsync();
     }
 }
