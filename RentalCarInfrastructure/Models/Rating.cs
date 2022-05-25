@@ -14,7 +14,7 @@ namespace RentalCarInfrastructure.Models
 
         [Required]
         public string UserId { get; set; }
-
+        
         public int Ratings { get; set; }
     }
 }

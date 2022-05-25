@@ -108,6 +108,7 @@ namespace RentalCarCore.Services
             var user = await _unitOfWork.UserRepository.GetUser(ratingDto.UserId);
             var trips = await _unitOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
             var trip = trips.FirstOrDefault(x => x.CarId == ratingDto.CarId);
+            
 
             if (user != null)
             {
@@ -181,6 +182,7 @@ namespace RentalCarCore.Services
         }
         public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
         {
+            
             User user = await _unitOfWork.UserRepository.GetUser(userId);
             if (user != null)
             {
@@ -222,6 +224,29 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.NoContent,
                 IsSuccessful = false
             };
+        }
+
+        public async Task<Response<User>> DeleteUser(string userId)
+        {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return new Response<User>()
+                    {
+                        Message = "User Not Found",
+                        ResponseCode = HttpStatusCode.NoContent,
+                        IsSuccessful = false
+                    };
+                }
+                user.IsActive = false;
+                await _userManager.UpdateAsync(user);
+
+                return new Response<User>()
+                {
+                    Message = "User Successfully Deleted",
+                    ResponseCode = HttpStatusCode.OK,
+                    IsSuccessful = true
+                };
         }
     }
 }

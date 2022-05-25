@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace RentalCarInfrastructure.Migrations
 {
-    public partial class initialDb : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -170,9 +170,9 @@ namespace RentalCarInfrastructure.Migrations
                     Title = table.Column<string>(type: "character varying(125)", maxLength: 125, nullable: true),
                     Article = table.Column<string>(type: "text", nullable: true),
                     Thumbnail = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -226,7 +226,8 @@ namespace RentalCarInfrastructure.Migrations
                     UnitOfPrice = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     IsVerify = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -250,7 +251,8 @@ namespace RentalCarInfrastructure.Migrations
                     Latitude = table.Column<string>(type: "character varying(125)", maxLength: 125, nullable: true),
                     Longitude = table.Column<string>(type: "character varying(125)", maxLength: 125, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -281,7 +283,8 @@ namespace RentalCarInfrastructure.Migrations
                     CarPlay = table.Column<bool>(type: "boolean", nullable: false),
                     IsTrack = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -300,17 +303,18 @@ namespace RentalCarInfrastructure.Migrations
                 {
                     Id = table.Column<string>(type: "text", nullable: false),
                     CarId = table.Column<string>(type: "text", nullable: false),
-                    Userid = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: false),
                     Comments = table.Column<string>(type: "text", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Comments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Comments_AspNetUsers_Userid",
-                        column: x => x.Userid,
+                        name: "FK_Comments_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -331,7 +335,8 @@ namespace RentalCarInfrastructure.Migrations
                     ImageUrl = table.Column<string>(type: "text", nullable: false),
                     IsFeature = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -379,7 +384,8 @@ namespace RentalCarInfrastructure.Migrations
                     UserId = table.Column<string>(type: "text", nullable: false),
                     Ratings = table.Column<int>(type: "integer", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -409,7 +415,8 @@ namespace RentalCarInfrastructure.Migrations
                     PickUpDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     ReturnDate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -439,7 +446,8 @@ namespace RentalCarInfrastructure.Migrations
                     TransactionRef = table.Column<string>(type: "character varying(125)", maxLength: 125, nullable: true),
                     Status = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
+                    ModifiedAt = table.Column<DateTime>(type: "timestamp without time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -511,9 +519,9 @@ namespace RentalCarInfrastructure.Migrations
                 column: "CarId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_Userid",
+                name: "IX_Comments_UserId",
                 table: "Comments",
-                column: "Userid");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Images_CarId",

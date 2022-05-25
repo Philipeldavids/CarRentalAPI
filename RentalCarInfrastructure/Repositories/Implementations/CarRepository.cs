@@ -65,7 +65,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return result;
         }
 
-        public async Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate)
+        /*public async Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate)
         {
             var carLocation = await _appDbContext.Cars
                               .Include(cd => cd.CarDetails)
@@ -83,7 +83,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             }
 
 
-        }
+        }*/
     }
 }
 

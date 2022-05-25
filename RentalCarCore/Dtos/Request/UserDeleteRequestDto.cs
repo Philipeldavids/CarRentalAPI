@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RentalCarInfrastructure.Models
+namespace RentalCarCore.Dtos.Request
 {
-    internal class Users
+    public class UserDeleteRequestDto
     {
+        public string userId { get; set; }
     }
 }

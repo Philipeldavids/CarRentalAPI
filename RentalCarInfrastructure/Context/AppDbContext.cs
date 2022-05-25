@@ -26,16 +26,25 @@ namespace RentalCarInfrastructure.Context
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Trip> Trips { get; set; }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            var entries = ChangeTracker.Entries().Where(entry => entry.Entity is BaseEntity &&
-            (entry.State == EntityState.Added || entry.State == EntityState.Modified));
+            var entries = ChangeTracker.Entries().Where(entry => entry.Entity is BaseEntity);
+            //(entry.State == EntityState.Added || entry.State == EntityState.Modified));
 
             foreach (var entry in entries)
             {
-                ((BaseEntity)entry.Entity).Id = Guid.NewGuid().ToString();
-                ((BaseEntity)entry.Entity).CreatedAt = DateTime.Now;
-                ((BaseEntity)entry.Entity).ModifiedAt = DateTime.Now;
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        ((BaseEntity)entry.Entity).Id = Guid.NewGuid().ToString();
+                        ((BaseEntity)entry.Entity).CreatedAt = DateTime.Now;
+                        ((BaseEntity)entry.Entity).ModifiedAt = DateTime.Now;
+                        break;
+                    case EntityState.Modified:
+                        ((BaseEntity)entry.Entity).ModifiedAt = DateTime.Now;
+                        break;
+                }
             }
             return base.SaveChangesAsync(cancellationToken);
         }

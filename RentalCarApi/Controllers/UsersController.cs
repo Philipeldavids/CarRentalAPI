@@ -5,10 +5,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RentalCarCore.Dtos.Request;
 using RentalCarCore.Interfaces;
 using RentalCarInfrastructure.ModelImage;
+using RentalCarInfrastructure.Models;
 using Serilog;
 
 namespace RentalCarApi.Controllers
@@ -19,10 +21,12 @@ namespace RentalCarApi.Controllers
     {
         private readonly IUserService _userService;
         private readonly IImageService _imageService;
-        public UsersController(IUserService userService, IImageService imageService)
+        private readonly UserManager<User> _userMgr;
+        public UsersController(IUserService userService, IImageService imageService, UserManager<User> userManager)
         {
             _userService = userService;
             _imageService = imageService;
+            _userMgr = userManager;
         }
 
         [HttpGet("UserId/GetUserTrips")]
@@ -187,6 +191,18 @@ namespace RentalCarApi.Controllers
         {
             var response = await _userService.GetUsersAsync(pageSize, pageNumber);
             return StatusCode((int)response.ResponseCode, response);
+        }
+
+        [HttpPatch("DeleteUser")]
+       // [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteAUser(string userId)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var deletedUser = await _userService.DeleteUser(userId);
+            return StatusCode((int)deletedUser.ResponseCode, deletedUser);
         }
     }
 }
