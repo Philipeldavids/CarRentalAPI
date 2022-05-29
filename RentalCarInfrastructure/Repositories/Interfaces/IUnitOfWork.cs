@@ -20,10 +20,7 @@ namespace RentalCarInfrastructure.Interfaces
 
         IRatingRepository RatingRepository { get; }
         ITransactionRepository TransactionRepository { get; }
-<<<<<<< Updated upstream
 
         IDealerRepository DealerRepository { get; }
-=======
->>>>>>> Stashed changes
     }
 }
