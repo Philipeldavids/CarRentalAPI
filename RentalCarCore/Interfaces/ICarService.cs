@@ -1,6 +1,7 @@
 ﻿using RentalCarCore.Dtos.Request;
 using RentalCarCore.Dtos.Response;
 using RentalCarCore.Utilities.Pagination;
+using RentalCarInfrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,6 +21,9 @@ namespace RentalCarCore.Interfaces
 
         Task<Response<string>> AddRating(RatingDto ratingDto);
         Task<Response<string>> AddComment(CommentDto commentDto);
+        Task<Response<Trip>> BookTripAsync(TripBookingRequestDTO tripRequest);
+        Task<Response<string>> DeleteCar(string carId, string dealerId);
+
 
     }
 }

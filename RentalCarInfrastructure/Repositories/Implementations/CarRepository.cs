@@ -19,6 +19,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             _appDbContext = appDbContext;
         }
 
+
         public async Task<IEnumerable<Car>> GetAllFeatureCarsAsync()
         {
             var query =  await _appDbContext.Cars
@@ -99,9 +100,15 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
             }
 
-
             return null;
 
+        }
+
+        public async Task<Trip> GetACarTripAsync(string carId)
+        {
+            var query = await _appDbContext.Trips
+                 .Where(x => x.CarId == carId && x.Status == "Pending").FirstOrDefaultAsync();
+            return query;
         }
 
 
@@ -115,6 +122,13 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                 .Include(x => x.Ratings);
             var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).ToListAsync();
             return cars;
+        }
+
+        public async Task<bool> DeleteACar(string carId, string dealerId)
+        {
+            var car = await _appDbContext.Cars.Where(x=>x.DealerId==dealerId && x.Id==carId).FirstOrDefaultAsync();
+            var delete = await Delete(car);
+            return delete;
         }
     }
 }

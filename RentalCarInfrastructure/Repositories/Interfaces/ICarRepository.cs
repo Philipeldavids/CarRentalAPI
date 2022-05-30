@@ -13,6 +13,9 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
 
         Task<Dictionary<Car, bool>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate);
         Task<IEnumerable<Car>> GetAllOfferCarsAsync();
+        Task<Trip> GetACarTripAsync(string carId);
+
+        Task<bool> DeleteACar(string carId, string dealerId);
 
     }
 }

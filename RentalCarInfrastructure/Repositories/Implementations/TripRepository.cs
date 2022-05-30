@@ -1,6 +1,7 @@
 ﻿using RentalCarInfrastructure.Context;
 using RentalCarInfrastructure.Models;
 using RentalCarInfrastructure.Repositories.Interfaces;
+using System.Threading.Tasks;
 
 namespace RentalCarInfrastructure.Repositories.Implementations
 {
@@ -10,6 +11,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         public TripRepository(AppDbContext appDbContext) : base(appDbContext)
         {
             _appDbContext = appDbContext;
+        }
+
+        public async Task<bool> BookATrip(Trip trip)
+        {
+            var result = await Add(trip);
+            return result;
         }
 
     }
