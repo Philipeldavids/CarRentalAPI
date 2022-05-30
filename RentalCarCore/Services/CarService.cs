@@ -282,5 +282,25 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.BadRequest
             };
         }
+
+        public async Task<Response<string>> DeleteCar(string carId, string dealerId)
+        {
+            var obj = await _uintOfWork.CarRepository.DeleteACar(carId, dealerId);
+            if (obj)
+            {
+                return new Response<string>
+                {
+                    IsSuccessful = true,
+                    Message = "Successful",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<string>
+            {
+                IsSuccessful = false,
+                Message = "NotSuccessful",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
     }
 }

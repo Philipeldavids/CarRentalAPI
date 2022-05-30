@@ -123,6 +123,13 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             var cars = await query.OrderByDescending(x => x.Ratings.Sum(x => x.Ratings) / x.Ratings.Count).ToListAsync();
             return cars;
         }
+
+        public async Task<bool> DeleteACar(string carId, string dealerId)
+        {
+            var car = await _appDbContext.Cars.Where(x=>x.DealerId==dealerId && x.Id==carId).FirstOrDefaultAsync();
+            var delete = await Delete(car);
+            return delete;
+        }
     }
 }
 

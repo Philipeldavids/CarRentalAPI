@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RentalCarInfrastructure.Repositories.Implementations
 {
-    public class DealerRepository : GenericRepository<DealerRepository>, IDealerRepository
+    public class DealerRepository : GenericRepository<Dealer>, IDealerRepository
     {
         private readonly AppDbContext _appDbContext;
         public DealerRepository(AppDbContext AppDbContext) : base(AppDbContext)
@@ -22,6 +22,13 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         {
             var dealers = await _appDbContext.Dealers.Include(l => l.Locations).ToListAsync();
             return (List<Dealer>)dealers;
+        }
+
+
+        public async Task<Dealer> DeleteACar(string userId)
+        {
+            var dealer = await GetARecord(userId);
+            return dealer;
         }
     }
 }

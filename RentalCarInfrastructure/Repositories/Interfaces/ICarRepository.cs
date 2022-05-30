@@ -15,7 +15,7 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<IEnumerable<Car>> GetAllOfferCarsAsync();
         Task<Trip> GetACarTripAsync(string carId);
 
-
+        Task<bool> DeleteACar(string carId, string dealerId);
 
     }
 }
