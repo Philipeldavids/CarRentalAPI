@@ -172,5 +172,29 @@ namespace RentalCarApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after some time");
             }
         }
+        [HttpPost("AddNewDealer")]
+        public async Task<IActionResult> AddNewDealer(DealerRequestDTO requestDTO)
+        {
+            try
+            {
+                var result = await _userService.AddDealer(requestDTO);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+            }
+        }
     }
 }

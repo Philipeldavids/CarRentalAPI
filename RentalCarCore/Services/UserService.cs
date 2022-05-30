@@ -16,6 +16,17 @@ using Microsoft.EntityFrameworkCore;
 using PayStack.Net;
 using Microsoft.Extensions.Configuration;
 using RentalCarCore.Dtos.Mapping;
+using System.Diagnostics;
+using Rave.NET.Models.MobileMoney;
+using Rave.NET.Models.VirtualCard;
+using Rave.NET.Models.Subaccount;
+using Rave.NET.Models.Tokens;
+using Rave.NET.Models;
+using Rave.NET.Models.Charge;
+using Rave.NET.Models.Account;
+using Rave.NET.Models.Card;
+using Rave.NET.Models.Validation;
+using Rave;
 
 namespace RentalCarCore.Services
 {
@@ -27,6 +38,9 @@ namespace RentalCarCore.Services
         private readonly IGenericRepository<Rating> _ratingRepository;
         private readonly IConfiguration _configuration;
         private PayStackApi payStackApi;
+       /* private static string PbKey = "pass your public key here";
+        private static string ScKey = "pass your secret key here";
+        var raveConfig = new RaveConfig(PbKey, SCKey, false);*/
 
         public UserService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository, IConfiguration configuration)
         {
@@ -255,6 +269,43 @@ namespace RentalCarCore.Services
             return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
             {
                 ResponseCode = HttpStatusCode.NoContent,
+            };
+        }
+
+        public async Task<Response<DealerResponseDTO>> AddDealer(DealerRequestDTO dealer)
+        {
+            var user = await _unitOfWork.UserRepository.GetUser(dealer.UserId);
+            if (user != null)
+            {
+                var dealers = await _unitOfWork.DealerRepository.GetDealer(dealer.UserId);
+                if (dealers == null)
+                {
+                    var correct =  _mapper.Map<Dealer>(dealer);
+                    var answer = await _unitOfWork.DealerRepository.AddNewDealer(correct);
+                    var result = _mapper.Map<DealerResponseDTO>(correct);
+                    return new Response<DealerResponseDTO>
+                    {
+                        Data = result,
+                        IsSuccessful = true,
+                        Message = "Successful",
+                        ResponseCode = HttpStatusCode.OK
+                    };
+                }
+               
+                return new Response<DealerResponseDTO>
+                {
+                    Data=null,
+                    IsSuccessful = false,
+                    Message = "Dealer Found",
+                    ResponseCode = HttpStatusCode.BadRequest
+                };
+            }
+            return new Response<DealerResponseDTO>
+            {
+                Data = null,
+                IsSuccessful = false,
+                Message = "Register as a User",
+                ResponseCode = HttpStatusCode.BadRequest
             };
         }
     }

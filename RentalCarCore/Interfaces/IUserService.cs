@@ -13,7 +13,7 @@ namespace RentalCarCore.Interfaces
         Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto);
         Task<Response<string>> VerifyPayment(string reference);
         Task<Response<PaymentResponseDTO>> UserPayment(PaymentRequestDTO pay);
-
+        Task<Response<DealerResponseDTO>> AddDealer(DealerRequestDTO dealer);
         Task<Response<UserDetailResponseDTO>> GetUser(string userId);
 
         Task<Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>> GetUsersAsync(int pageSize, int pageNumber);
