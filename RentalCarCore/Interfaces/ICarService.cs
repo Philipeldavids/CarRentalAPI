@@ -23,6 +23,7 @@ namespace RentalCarCore.Interfaces
         Task<Response<string>> AddComment(CommentDto commentDto);
         Task<Response<Trip>> BookTripAsync(TripBookingRequestDTO tripRequest);
         Task<Response<string>> DeleteCar(string carId, string dealerId);
+        Task<Response<string>> DealerAddCar(CarRequestDTO request);
 
 
     }

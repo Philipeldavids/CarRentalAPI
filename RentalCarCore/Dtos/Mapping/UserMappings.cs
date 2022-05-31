@@ -83,6 +83,27 @@ namespace RentalCarCore.Dtos.Mapping
                 .ForMember(dealer => dealer.Longitude, opt => opt.MapFrom(op => op.Locations))
                 .ReverseMap();
 
+            // Add New Car
+            CreateMap<Car, CarRequestDTO>()
+                .ForMember(car => car.TypeOfSeat, opt => opt.MapFrom(src => src.CarDetails.TypeOfSeat))
+                .ForMember(car => car.Sunroof, opt => opt.MapFrom(src => src.CarDetails.Sunroof))
+                .ForMember(car => car.Bluetooth, opt => opt.MapFrom(src => src.CarDetails.Bluetooth))
+                .ForMember(car => car.AirCondition, opt => opt.MapFrom(src => src.CarDetails.AirCondition))
+                .ForMember(car => car.BackUpcamera, opt => opt.MapFrom(src => src.CarDetails.BackUpcamera))
+                .ForMember(car => car.CarPlay, opt => opt.MapFrom(src => src.CarDetails.CarPlay))
+                .ForMember(car => car.Driver, opt => opt.MapFrom(src => src.CarDetails.Driver))
+                .ForMember(car => car.NavigationSystem, opt => opt.MapFrom(src => src.CarDetails.NavigationSystem))
+                .ForMember(car => car.RemoteStart, opt => opt.MapFrom(src => src.CarDetails.RemoteStart))
+                .ForMember(car => car.ThirdRowSeating, opt => opt.MapFrom(src => src.CarDetails.ThirdRowSeating))
+                .ReverseMap();
+
+            // List of All Trips
+            CreateMap<Trip, AllTripsDto>()
+               .ForMember(trip => trip.Amount, opt => opt.MapFrom(op => op.Transactions))
+               .ForMember(trip => trip.PaymentMethod, opt => opt.MapFrom(op => op.Transactions))
+               .ForMember(trip => trip.TransactionRef, opt => opt.MapFrom(op => op.Transactions))
+               .ForMember(trip => trip.Status, opt => opt.MapFrom(op => op.Transactions))
+               .ReverseMap();
 
 
         }

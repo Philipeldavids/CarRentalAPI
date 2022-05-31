@@ -9,5 +9,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<User> GetUser(string userId);
         Task<bool> UpdateUser(User user);
         Task<List<Trip>> GetTripsByUserId(string userId);
+        Task<List<Trip>> GetTripsAsync();
     }
 }
