@@ -29,10 +29,10 @@ namespace RentalCarInfrastructure.Repositories.Implementations
            return result;
         }
 
-        public async Task<bool> UpdateTransaction(Transaction transaction)
+        public void UpdateTransaction(Transaction transaction)
         {
-            var result = await Update(transaction);
-            return result;
+            _appDbContext.Update(transaction);
+            _appDbContext.SaveChanges();
         }
     }
 }

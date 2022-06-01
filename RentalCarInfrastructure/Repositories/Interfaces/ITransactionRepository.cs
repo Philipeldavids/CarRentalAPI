@@ -7,6 +7,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     {
         Task<bool> AddTransaction(Transaction transaction);
         Transaction GetTransactionReference(string reference);
-        Task<bool> UpdateTransaction(Transaction transaction);
+        void UpdateTransaction(Transaction transaction);
     }
 }

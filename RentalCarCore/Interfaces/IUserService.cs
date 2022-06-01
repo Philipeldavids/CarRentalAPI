@@ -11,7 +11,7 @@ namespace RentalCarCore.Interfaces
         Task<Response<List<TripsDTO>>> GetTrips(string UserId);
 
         Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto);
-        Task<Response<string>> VerifyPayment(string reference);
+        Response<string> VerifyPayment(string reference);
         Task<Response<PaymentResponseDTO>> UserPayment(PaymentRequestDTO pay);
         Task<Response<DealerResponseDTO>> AddDealer(DealerRequestDTO dealer);
         Task<Response<UserDetailResponseDTO>> GetUser(string userId);

@@ -75,7 +75,7 @@ namespace RentalCarApi.Controllers
         public async Task<IActionResult> GetAllCars(int pageSize, int pageNumber)
         {
             var carResponse = await _carService.GetAllCarsAsync(pageSize, pageNumber);
-            return StatusCode((int) carResponse.ResponseCode, carResponse);
+            return StatusCode((int)carResponse.ResponseCode, carResponse);
         }
 
         [HttpPost("AddRating")]
@@ -217,6 +217,32 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [HttpPost("BookTrip")]
+        public async Task<IActionResult> BookTrip(TripBookingRequestDTO tripRequest)
+        {
+
+            try
+            {
+                var trip = await _carService.BookTripAsync(tripRequest);
+                if (trip.IsSuccessful)
+                {
+                    return Ok(trip);
+                }
+
+                return BadRequest(trip);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+            }
+        }
+
         [HttpPost("verifypayment")]
         public async Task<IActionResult> ConfirmPayment(string reference)
         {
@@ -238,7 +264,34 @@ namespace RentalCarApi.Controllers
             catch (Exception ex)
             {
                 Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+
+            }
+        }
+
+        [HttpDelete("DeleteACar")]
+        public async Task<IActionResult> DeleteACar(string carId, string dealerId)
+        {
+
+            try
+            {
+                var obj = await _carService.DeleteCar(carId, dealerId);
+                if (obj.IsSuccessful)
+                {
+                    return Ok();
+                }
+
+                return BadRequest();
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
             }
         }
     }

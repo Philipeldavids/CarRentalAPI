@@ -40,7 +40,7 @@ namespace RentalCarApi
 
             // Configure Identity
             services.ConfigureIdentity();
-
+           
             // Register Dependency Injection Service Extension
             services.AddDependencyInjection();
 

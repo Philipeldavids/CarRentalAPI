@@ -35,5 +35,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             var dealers =await Add(dealer);
             return dealers;
         }
+
+
+        public async Task<Dealer> DeleteACar(string userId)
+        {
+            var dealer = await GetARecord(userId);
+            return dealer;
+        }
     }
 }

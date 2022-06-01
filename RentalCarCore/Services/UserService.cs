@@ -17,16 +17,6 @@ using PayStack.Net;
 using Microsoft.Extensions.Configuration;
 using RentalCarCore.Dtos.Mapping;
 using System.Diagnostics;
-using Rave.NET.Models.MobileMoney;
-using Rave.NET.Models.VirtualCard;
-using Rave.NET.Models.Subaccount;
-using Rave.NET.Models.Tokens;
-using Rave.NET.Models;
-using Rave.NET.Models.Charge;
-using Rave.NET.Models.Account;
-using Rave.NET.Models.Card;
-using Rave.NET.Models.Validation;
-using Rave;
 
 namespace RentalCarCore.Services
 {
@@ -38,10 +28,8 @@ namespace RentalCarCore.Services
         private readonly IGenericRepository<Rating> _ratingRepository;
         private readonly IConfiguration _configuration;
         private PayStackApi payStackApi;
-       /* private static string PbKey = "pass your public key here";
-        private static string ScKey = "pass your secret key here";
-        var raveConfig = new RaveConfig(PbKey, SCKey, false);*/
-
+        private static string PbKey = "FLWPUBK_TEST-23f93b703e152ec64d3fc3b8dddfcb91-X";
+        
         public UserService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -214,7 +202,7 @@ namespace RentalCarCore.Services
             };
         }
 
-        public async Task<Response<string>> VerifyPayment(string reference)
+        public Response<string> VerifyPayment(string reference)
         {
             TransactionVerifyResponse response = payStackApi.Transactions.Verify(reference);
             if (response.Data.Status == "success")
@@ -222,8 +210,8 @@ namespace RentalCarCore.Services
                 var trans = _unitOfWork.TransactionRepository.GetTransactionReference(reference);
                 if (trans != null)
                 {
-                    trans.Status = "success";
-                    await _unitOfWork.TransactionRepository.UpdateTransaction(trans);
+                    trans.Status = "Successful";
+                    _unitOfWork.TransactionRepository.UpdateTransaction(trans);
                     return new Response<string>
                     {
                         IsSuccessful = true,
@@ -249,8 +237,7 @@ namespace RentalCarCore.Services
 
         private static string GenerateReference()
         {
-            Random random = new Random((int)DateTime.Now.Ticks);
-            return random.Next(100000000, 999999999).ToString();
+            return Guid.NewGuid().ToString();
         }
 
         public async Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber)

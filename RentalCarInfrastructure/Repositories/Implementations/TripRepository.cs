@@ -13,6 +13,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             _appDbContext = appDbContext;
         }
 
+        public async Task<bool> BookATrip(Trip trip)
+        {
+            var result = await Add(trip);
+            return result;
+        }
+
         public async Task<Trip> GetCarTrip(string tripId)
         {
             var result = await _appDbContext.Trips.FindAsync(tripId);
