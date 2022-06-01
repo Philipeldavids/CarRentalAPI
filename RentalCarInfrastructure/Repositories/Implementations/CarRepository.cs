@@ -137,6 +137,28 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return cars;
         }
 
+        public async Task<bool> EditCar(Car car)
+        {
+
+
+            var res = await Update(car);
+            return res;
+
+        }
+
+        public void EditCarByDealer(Car car)
+        {
+            _appDbContext.Update(car);
+            _appDbContext.SaveChanges();
+        }
+
+        public async Task<Car> GetCarById(string carId)
+        {
+            var carQuery = await _appDbContext.Cars
+                             .Include(cd => cd.CarDetails).Where(y => y.Id == carId).FirstOrDefaultAsync();
+            return carQuery;
+        }
+
     }
 }
 

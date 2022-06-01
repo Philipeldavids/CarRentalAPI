@@ -21,7 +21,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         public async Task<List<Dealer>> GetDealersAsync()
         {
             var dealers = await _appDbContext.Dealers.Include(l => l.Locations).ToListAsync();
-            return (List<Dealer>)dealers;
+            return dealers;
         }
 
         public async Task<bool> AddNewDealer(Dealer dealer)

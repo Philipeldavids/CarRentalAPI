@@ -107,6 +107,30 @@ namespace RentalCarCore.Dtos.Mapping
                .ReverseMap();
 
 
+            // Update car
+            CreateMap<Car, CarUpdateDto>()
+                .ForMember(car => car.TypeOfSeat, opt => opt.MapFrom(src => src.CarDetails.TypeOfSeat))
+                .ForMember(car => car.Sunroof, opt => opt.MapFrom(src => src.CarDetails.Sunroof))
+                .ForMember(car => car.Bluetooth, opt => opt.MapFrom(src => src.CarDetails.Bluetooth))
+                .ForMember(car => car.AirCondition, opt => opt.MapFrom(src => src.CarDetails.AirCondition))
+                .ForMember(car => car.BackUpcamera, opt => opt.MapFrom(src => src.CarDetails.BackUpcamera))
+                .ForMember(car => car.CarPlay, opt => opt.MapFrom(src => src.CarDetails.CarPlay))
+                .ForMember(car => car.NavigationSystem, opt => opt.MapFrom(src => src.CarDetails.NavigationSystem))
+                .ForMember(car => car.ThirdRowSeating, opt => opt.MapFrom(src => src.CarDetails.ThirdRowSeating))
+                .ForMember(car => car.RemoteStart, opt => opt.MapFrom(src => src.CarDetails.RemoteStart))
+                .ReverseMap();
+
+
+            // Dealer listings
+
+            CreateMap<Dealer, GetAllDealerResponseDto>()
+                .ForMember(dealer => dealer.Address, opt => opt.MapFrom(op => op.Locations))
+                .ForMember(dealer => dealer.State, opt => opt.MapFrom(op => op.Locations))
+                .ForMember(dealer => dealer.Latitude, opt => opt.MapFrom(op => op.Locations))
+                .ForMember(dealer => dealer.Longitude, opt => opt.MapFrom(op => op.Locations))
+                .ReverseMap();
+
+
         }
     }
 }
