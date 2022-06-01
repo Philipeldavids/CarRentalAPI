@@ -34,5 +34,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                 .Include(y => y.Transactions).ToListAsync();
             return trips;
         }
+
+        public async Task<List<Trip>> GetTripsAsync()
+        {
+            var trips = await _appDbContext.Trips.OrderByDescending(x => x.PickUpDate).ToListAsync();
+            return (List<Trip>)trips;
+        }
+
     }
 }

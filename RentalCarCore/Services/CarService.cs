@@ -302,5 +302,27 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.BadRequest
             };
         }
+
+        public async Task<Response<string>> DealerAddCar(CarRequestDTO request)
+        {
+            var dealer = await _uintOfWork.DealerRepository.GetDealer(request.DealerId);
+            if (dealer != null)
+            {
+                var car = _mapper.Map<Car>(request);
+                await _uintOfWork.CarRepository.AddNewCar(car);
+                return new Response<string>
+                {
+                    IsSuccessful = true,
+                    Message = "Dealer Found",
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<string>
+            {
+                IsSuccessful = false,
+                Message = "Dealer Not Found",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
     }
 }

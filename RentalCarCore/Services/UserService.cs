@@ -167,6 +167,25 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.NoContent,
             };
         }
+
+        public async Task<Response<PaginationModel<IEnumerable<AllTripsDto>>>> GetAllTripsAsync(int pageSize, int pageNumber)
+        {
+            var trips = await _unitOfWork.UserRepository.GetTripsAsync();
+            var response = _mapper.Map<IEnumerable<AllTripsDto>>(trips);
+            if (trips != null)
+            {
+                var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<AllTripsDto>>>()
+                {
+                    Data = res,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<AllTripsDto>>>()
+            {
+                ResponseCode = HttpStatusCode.NoContent,
+            };
+        }
     }
 }
 

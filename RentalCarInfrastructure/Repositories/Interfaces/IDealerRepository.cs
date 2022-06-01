@@ -11,5 +11,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     {
         Task<List<Dealer>> GetDealersAsync();
         Task<Dealer> DeleteACar(string userId);
+        Task<Dealer> GetDealer(string id);
     }
 }
