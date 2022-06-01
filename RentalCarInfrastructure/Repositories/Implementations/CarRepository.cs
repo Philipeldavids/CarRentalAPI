@@ -1,13 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using RentalCarInfrastructure.Context;
 using RentalCarInfrastructure.Models;
 using RentalCarInfrastructure.Repositories.Interfaces;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore.Query;
 
 namespace RentalCarInfrastructure.Repositories.Implementations
 {
@@ -36,6 +34,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                              .Include(x => x.Images)
                              .Include(x => x.Ratings)
                              .Include(x => x.Comments).Where(y => y.Id == carId).ToListAsync();
+            return carDetails;
+        }
+        public async Task<Car> GetACarDetailAsync(string carId)
+        {
+            var carDetails = await _appDbContext.Cars
+                             .Where(y => y.Id == carId).FirstOrDefaultAsync();
             return carDetails;
         }
         public async Task<IEnumerable<Car>> GetAllCarsAsync()

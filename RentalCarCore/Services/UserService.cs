@@ -249,7 +249,42 @@ namespace RentalCarCore.Services
                 };
         }
 
-        public async Task<Response<>
+        public async Task<Response<List<TransactionResponseDto>>> GetAllTransactionByUser(string userId)
+        {
+            var trips = await _unitOfWork.TripRepository.GetAllTransactionByUserAsyc(userId);
+            if(trips != null)
+            {
+                var transaction = new List<TransactionResponseDto>();
+                
+                foreach (var trip in trips)
+                {
+                    var car = await _unitOfWork.CarRepository.GetACarDetailAsync(trip.CarId);
+                    var transactionResponseDto = new TransactionResponseDto()
+                    {
+                        CarBooked = car.Model + ' ' + car.YearOfMan,
+                        Amount = trip.Transactions.Amount,
+                        DateOfPayment = trip.Transactions.CreatedAt,
+                        Status = trip.Transactions.Status,
+                        TripId = trip.Id,
+                        PaymentMethod = trip.Transactions.PaymentMethod,
+                        TransactionRef = trip.Transactions.TransactionRef
+                    };
+                    transaction.Add(transactionResponseDto);
+                }
+                return new Response<List<TransactionResponseDto>>()
+                {
+                    Data = transaction,
+                    Message = "List of Transaction Details",
+                    IsSuccessful = true,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<List<TransactionResponseDto>>
+            {
+                Message = "Opps!, something went wrong, No Transaction found",
+                IsSuccessful = false,
+                ResponseCode = HttpStatusCode.NoContent
+            };
+        }
     }
 }
-

@@ -20,5 +20,6 @@ namespace RentalCarCore.Interfaces
 
         Task<Response<PaginationModel<IEnumerable<GetAllUserResponsetDto>>>> GetUsersAsync(int pageSize, int pageNumber);
         Task<Response<User>> DeleteUser(string userId);
+        Task<Response<List<TransactionResponseDto>>> GetAllTransactionByUser(string userId);
     }
 }

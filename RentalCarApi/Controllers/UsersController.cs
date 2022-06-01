@@ -204,5 +204,16 @@ namespace RentalCarApi.Controllers
             var deletedUser = await _userService.DeleteUser(userId);
             return StatusCode((int)deletedUser.ResponseCode, deletedUser);
         }
+
+        [HttpGet("GetAllUserTransactionDetails")]
+        public async Task<IActionResult> GetAllUserTransactionDetails(string userId)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var transactionDetails = await _userService.GetAllTransactionByUser(userId);
+            return StatusCode((int) transactionDetails.ResponseCode, transactionDetails);
+        }
     }
 }
