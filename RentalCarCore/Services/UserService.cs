@@ -29,7 +29,7 @@ namespace RentalCarCore.Services
         private readonly IConfiguration _configuration;
         private PayStackApi payStackApi;
         private static string PbKey = "FLWPUBK_TEST-23f93b703e152ec64d3fc3b8dddfcb91-X";
-        
+
         public UserService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -111,7 +111,7 @@ namespace RentalCarCore.Services
         }
 
 
-        
+
         public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
         {
             User user = await _unitOfWork.UserRepository.GetUser(userId);
@@ -244,7 +244,7 @@ namespace RentalCarCore.Services
         {
             var dealers = await _unitOfWork.DealerRepository.GetDealersAsync();
             var response = _mapper.Map<IEnumerable<GetAllDealerResponseDto>>(dealers);
-            if(dealers != null)
+            if (dealers != null)
             {
                 var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
                 return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
@@ -267,7 +267,7 @@ namespace RentalCarCore.Services
                 var dealers = await _unitOfWork.DealerRepository.GetDealer(dealer.UserId);
                 if (dealers == null)
                 {
-                    var correct =  _mapper.Map<Dealer>(dealer);
+                    var correct = _mapper.Map<Dealer>(dealer);
                     var answer = await _unitOfWork.DealerRepository.AddNewDealer(correct);
                     var result = _mapper.Map<DealerResponseDTO>(correct);
                     return new Response<DealerResponseDTO>
@@ -278,10 +278,10 @@ namespace RentalCarCore.Services
                         ResponseCode = HttpStatusCode.OK
                     };
                 }
-               
+
                 return new Response<DealerResponseDTO>
                 {
-                    Data=null,
+                    Data = null,
                     IsSuccessful = false,
                     Message = "Dealer Found",
                     ResponseCode = HttpStatusCode.BadRequest
@@ -293,6 +293,25 @@ namespace RentalCarCore.Services
                 IsSuccessful = false,
                 Message = "Register as a User",
                 ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
+    
+        public async Task<Response<PaginationModel<IEnumerable<AllTripsDto>>>> GetAllTripsAsync(int pageSize, int pageNumber)
+        {
+            var trips = await _unitOfWork.UserRepository.GetTripsAsync();
+            var response = _mapper.Map<IEnumerable<AllTripsDto>>(trips);
+            if (trips != null)
+            {
+                var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<AllTripsDto>>>()
+                {
+                    Data = res,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<AllTripsDto>>>()
+            {
+                ResponseCode = HttpStatusCode.NoContent,
             };
         }
     }

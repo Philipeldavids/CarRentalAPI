@@ -24,12 +24,6 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return (List<Dealer>)dealers;
         }
 
-        public async Task<Dealer> GetDealer(string id)
-        {
-            var dealer = await GetARecord(id);
-            return dealer;
-        }
-
         public async Task<bool> AddNewDealer(Dealer dealer)
         {
             var dealers =await Add(dealer);
@@ -40,6 +34,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         public async Task<Dealer> DeleteACar(string userId)
         {
             var dealer = await GetARecord(userId);
+            return dealer;
+        }
+
+        public async Task<Dealer> GetDealer(string id)
+        {
+            var dealer = await GetARecord(id);
             return dealer;
         }
     }

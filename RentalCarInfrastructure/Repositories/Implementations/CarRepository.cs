@@ -130,6 +130,13 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             var delete = await Delete(car);
             return delete;
         }
+
+        public async Task<bool> AddNewCar(Car car)
+        {
+            var cars = await Add(car);
+            return cars;
+        }
+
     }
 }
 

@@ -15,6 +15,7 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<Trip> GetACarTripAsync(string carId);
 
         Task<bool> DeleteACar(string carId, string dealerId);
+        Task<bool> AddNewCar(Car car);
 
     }
 }

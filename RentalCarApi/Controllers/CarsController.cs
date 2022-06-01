@@ -244,11 +244,11 @@ namespace RentalCarApi.Controllers
         }
 
         [HttpPost("verifypayment")]
-        public async Task<IActionResult> ConfirmPayment(string reference)
+        public IActionResult ConfirmPayment(string reference)
         {
             try
             {
-                var result = await _userService.VerifyPayment(reference);
+                var result =  _userService.VerifyPayment(reference);
                 if (result.IsSuccessful)
                 {
                     return Ok(result);
@@ -292,6 +292,34 @@ namespace RentalCarApi.Controllers
             {
                 Log.Logger.Error(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+            }
+        }
+
+        [HttpPost("AddNewCar")]
+        public async Task<IActionResult> AddACar(CarRequestDTO requestDTO)
+        {
+            try
+            {
+                var addCar = await _carService.DealerAddCar(requestDTO);
+                if (addCar.IsSuccessful)
+                {
+                    return Ok(addCar);
+                }
+
+                return BadRequest(addCar);
+            }
+
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured while processing your request, please try again");
+
             }
         }
     }

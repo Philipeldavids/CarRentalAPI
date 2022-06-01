@@ -172,6 +172,32 @@ namespace RentalCarApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after some time");
             }
         }
+
+        [HttpGet("GetAllTrips")]
+        public async Task<IActionResult> GetAllTrips(int pageSize, int pageNumber)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var res = await _userService.GetAllTripsAsync(pageSize, pageNumber);
+                    return StatusCode((int)res.ResponseCode, res);
+                }
+                return BadRequest(ModelState);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again later");
+            }
+        }
+
         [HttpPost("AddNewDealer")]
         public async Task<IActionResult> AddNewDealer(DealerRequestDTO requestDTO)
         {
