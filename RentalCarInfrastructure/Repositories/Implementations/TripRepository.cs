@@ -19,5 +19,10 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return result;
         }
 
+        public async Task<Trip> GetCarTrip(string tripId)
+        {
+            var result = await _appDbContext.Trips.FindAsync(tripId);
+            return result;
+        }
     }
 }

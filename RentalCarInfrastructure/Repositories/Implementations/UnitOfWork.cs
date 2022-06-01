@@ -17,6 +17,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
         private ICarRepository _carRepository;
         private IRatingRepository _ratingRepository;
+        private ITransactionRepository _transactionRepository;
 
         private IDealerRepository _dealerRepository;
 
@@ -31,7 +32,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
         public IRatingRepository RatingRepository => _ratingRepository ??= new RatingRepository(_appDbContext);
 
         public ICommentRepository CommentRepository => _commentRepository ??= new CommentRepository(_appDbContext);
-
+        public ITransactionRepository TransactionRepository => _transactionRepository ??= new TransactionRepository(_appDbContext);
         public IDealerRepository DealerRepository => _dealerRepository ??= new DealerRepository(_appDbContext);
     }
 }

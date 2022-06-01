@@ -20,7 +20,8 @@ namespace RentalCarCore.Dtos.Mapping
             CreateMap<Trip, TripsDTO>().ReverseMap();
 
             CreateMap<UserDetailResponseDTO, User>().ReverseMap();
-
+            CreateMap<Dealer, DealerResponseDTO>().ReverseMap();
+            CreateMap<Dealer,DealerRequestDTO>().ReverseMap();
             CreateMap<Rating, RatingDto>().ReverseMap();
             CreateMap<Comment, CommentDto>().ReverseMap();
 

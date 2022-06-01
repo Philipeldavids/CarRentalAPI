@@ -35,21 +35,20 @@ namespace RentalCarApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddControllers().AddNewtonsoftJson(options =>
-                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            );
             // Add Jwt Authentication and Authorization
             services.ConfigureAuthentication(Configuration);
 
             // Configure Identity
             services.ConfigureIdentity();
-
+           
             // Register Dependency Injection Service Extension
             services.AddDependencyInjection();
 
             services.Configure<MailSettings>(Configuration.GetSection("MailSettings"));
             services.Configure<ImageUploadSettings>(Configuration.GetSection("ImageUploadSettings"));
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
             services.AddDbContextAndConfigurations(Environment, Configuration);
             services.AddAutoMapper(typeof(UserMappings));
             services.ConfigureCors();

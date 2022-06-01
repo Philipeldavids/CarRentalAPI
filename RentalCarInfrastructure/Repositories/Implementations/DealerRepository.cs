@@ -24,6 +24,12 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return (List<Dealer>)dealers;
         }
 
+        public async Task<bool> AddNewDealer(Dealer dealer)
+        {
+            var dealers =await Add(dealer);
+            return dealers;
+        }
+
 
         public async Task<Dealer> DeleteACar(string userId)
         {

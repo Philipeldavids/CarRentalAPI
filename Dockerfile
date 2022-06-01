@@ -26,7 +26,8 @@ WORKDIR /app
 COPY --from=publish /src/publish .
 COPY --from=publish /src/RentalCarApi/Json/Dealer.json ./
 COPY --from=publish /src/RentalCarApi/Json/User.json ./
+COPY --from=publish /src/RentalCarApi/StaticFiles/ConfirmEmail.html ./
+COPY --from=publish /src/RentalCarApi/StaticFiles/ForgotPassword.html ./
 COPY --from=publish /src/publish .
-#ENTRYPOINT ["dotnet", "RentalCarApi.dll"]
 
 CMD ASPNETCORE_URLS=http://*:$PORT dotnet RentalCarApi.dll
