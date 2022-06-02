@@ -324,5 +324,43 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.BadRequest
             };
         }
+
+        public async Task<Response<string>> EditCar(string carId, CarUpdateDto carUpdateDto)
+        {
+            var car = await _uintOfWork.CarRepository.GetCarById(carId);
+
+            if (car != null)
+            {
+                car.Model = carUpdateDto.Model;
+                car.YearOfMan = carUpdateDto.YearOfMan;
+                car.PlateNumber = carUpdateDto.PlateNumber;
+                car.ChasisNumber = carUpdateDto.ChasisNumber;
+                car.Color = carUpdateDto.Color;
+                car.TypeOfCar = carUpdateDto.TypeOfCar;
+                car.CarDetails.TypeOfSeat = carUpdateDto.TypeOfSeat;
+                car.CarDetails.AirCondition = carUpdateDto.AirCondition;
+                car.CarDetails.Sunroof = carUpdateDto.Sunroof;
+                car.CarDetails.Bluetooth = carUpdateDto.Bluetooth;
+                car.CarDetails.NavigationSystem = carUpdateDto.NavigationSystem;
+                car.CarDetails.RemoteStart = carUpdateDto.RemoteStart;
+                car.CarDetails.BackUpcamera = carUpdateDto.BackUpcamera;
+                car.CarDetails.ThirdRowSeating = carUpdateDto.ThirdRowSeating;
+                car.CarDetails.CarPlay = carUpdateDto.CarPlay;
+
+                _uintOfWork.CarRepository.EditCarByDealer(car);
+
+                return new Response<string>()
+                {
+                    IsSuccessful = true,
+                    ResponseCode = HttpStatusCode.OK,
+                };
+            }
+            return new Response<string>()
+            {
+                IsSuccessful = false,
+                Message = "Car not found",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
     }
 }

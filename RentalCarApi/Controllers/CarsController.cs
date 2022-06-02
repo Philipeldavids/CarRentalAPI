@@ -322,5 +322,33 @@ namespace RentalCarApi.Controllers
 
             }
         }
+
+        [HttpPut("id")]
+        //[Authorize(Roles = "Dealer")]
+        public async Task<IActionResult> UpdateCar(string carId, CarUpdateDto carUpdateDto)
+        {
+
+            try
+            {
+
+                if (ModelState.IsValid)
+                {
+                    var result = await _carService.EditCar(carId, carUpdateDto);
+                    return Ok(result);
+                }
+                return BadRequest(ModelState);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Try again later");
+            }
+
+        }
     }
 }
