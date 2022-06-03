@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace RentalCarCore.Dtos.Request
 {
-    public class CommentDto
+    public class PaymentRequestDTO
     {
         public string TripId { get; set; }
-        public string UserId { get; set; }
-        public string CarId { get; set; }
-        public string Comments { get; set; }
+        public string Email { get; set; }   
+        public string PaymentMethod { get; set; }
+        public int Amount { get; set; }
     }
 }

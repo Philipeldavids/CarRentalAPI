@@ -8,12 +8,13 @@ using Serilog;
 using System;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using RentalCarCore.Utilities;
 
 namespace RentalCarCore.Controllers
 {
 
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthentication _authentication;
@@ -65,9 +66,10 @@ namespace RentalCarCore.Controllers
             }
         }
 
-        [Authorize]
+        
         [HttpPatch]
         [Route("Update-password")]
+        [Authorize]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDTO updatePasswordDto)
         {
             var userId = HttpContext.User.FindFirst(user => user.Type == ClaimTypes.NameIdentifier).Value;

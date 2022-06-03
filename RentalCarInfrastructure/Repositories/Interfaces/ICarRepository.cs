@@ -8,9 +8,18 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     public interface ICarRepository
     {
         Task<IEnumerable<Car>> GetAllFeatureCarsAsync();
-        Task<IEnumerable<Car>> GetCarDetailsAsync(string carId);
-        Task<Car> GetACarDetailAsync(string carId);
+        Task<Car> GetCarDetailsAsync(string carId);
         Task<IEnumerable<Car>> GetAllCarsAsync();
+        Task<Dictionary<Car, bool>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate);
+        Task<IEnumerable<Car>> GetAllOfferCarsAsync();
+        Task<Trip> GetACarTripAsync(string carId);
+
+        Task<bool> DeleteACar(string carId, string dealerId);
+        Task<bool> AddNewCar(Car car);
+
+        Task<bool> EditCar(Car car);
+        Task<Car> GetCarById(string carId);
+        void EditCarByDealer(Car car);
 
         Task<IEnumerable<Car>> GetCarByLocationAsync(Location state);
        // Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate);

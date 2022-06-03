@@ -13,6 +13,10 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using RentalCarCore.Utilities.Pagination;
 using Microsoft.EntityFrameworkCore;
+using PayStack.Net;
+using Microsoft.Extensions.Configuration;
+using RentalCarCore.Dtos.Mapping;
+using System.Diagnostics;
 
 namespace RentalCarCore.Services
 {
@@ -22,14 +26,18 @@ namespace RentalCarCore.Services
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IGenericRepository<Rating> _ratingRepository;
-        
-        public UserService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository)
+        private readonly IConfiguration _configuration;
+        private PayStackApi payStackApi;
+        private static string PbKey = "FLWPUBK_TEST-23f93b703e152ec64d3fc3b8dddfcb91-X";
+
+        public UserService(UserManager<User> userManager, IMapper mapper, IUnitOfWork unitOfWork, IGenericRepository<Rating> ratingRepository, IConfiguration configuration)
         {
             _userManager = userManager;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _ratingRepository = ratingRepository;
-            
+            _configuration = configuration;
+            payStackApi = new PayStackApi(_configuration["Payment:PaystackSK"]);
         }
 
         public async Task<Response<List<TripsDTO>>> GetTrips(string UserId)
@@ -70,32 +78,32 @@ namespace RentalCarCore.Services
 
         public async Task<Response<string>> UpdateUserDetails(string Id, UpdateUserDto updateUserDto)
         {
-            var user = _unitOfWork.UserRepository.GetUser(Id);
+            var user = await _unitOfWork.UserRepository.GetUser(Id);
 
             if (user != null)
             {
 
-                var result = await _unitOfWork.UserRepository.UpdateUser(new User()
-                {
-                    FirstName = string.IsNullOrWhiteSpace(updateUserDto.FirstName) ? updateUserDto.FirstName : updateUserDto.FirstName,
-                    LastName = string.IsNullOrWhiteSpace(updateUserDto.LastName) ? updateUserDto.LastName : updateUserDto.LastName,
-                    Address = string.IsNullOrWhiteSpace(updateUserDto.PhoneNumber) ? updateUserDto.PhoneNumber : updateUserDto.PhoneNumber,
-                    PhoneNumber = string.IsNullOrWhiteSpace(updateUserDto.Address) ? updateUserDto.Address : updateUserDto.Address,
-
-                });
+                user.FirstName = updateUserDto.FirstName;
+                user.LastName = updateUserDto.LastName;
+                user.PhoneNumber = updateUserDto.PhoneNumber;
+                user.Address = updateUserDto.Address;
+                var result = await _unitOfWork.UserRepository.UpdateUser(user);
 
                 if (result)
                 {
                     return new Response<string>()
                     {
                         IsSuccessful = true,
-                        Message = "Profile updated"
+                        Message = "Profile updated",
+                        ResponseCode = HttpStatusCode.OK
+
                     };
                 }
                 return new Response<string>()
                 {
                     IsSuccessful = false,
-                    Message = "Profile not updated"
+                    Message = "Profile not updated",
+                    ResponseCode = HttpStatusCode.BadRequest
                 };
             }
 
@@ -103,6 +111,10 @@ namespace RentalCarCore.Services
         }
 
 
+
+        public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
+        {
+            User user = await _unitOfWork.UserRepository.GetUser(userId);
         public async Task<Response<string>> AddRating(RatingDto ratingDto)
         {
             var user = await _unitOfWork.UserRepository.GetUser(ratingDto.UserId);
@@ -110,80 +122,6 @@ namespace RentalCarCore.Services
             var trip = trips.FirstOrDefault(x => x.CarId == ratingDto.CarId);
             
 
-            if (user != null)
-            {
-                if(trip != null)
-                {
-                    var rate = _mapper.Map<Rating>(ratingDto);
-                    var result = await _ratingRepository.Add(rate);
-                    if (result)
-                    {
-                        return new Response<string>
-                        {
-                            IsSuccessful = true,
-                            Message = "Response Successfull",
-                            ResponseCode = HttpStatusCode.OK
-                        };
-                    }
-                }
-                return new Response<string>
-                {
-                    IsSuccessful = false,
-                    Message = "Trip not completed",
-                    ResponseCode = HttpStatusCode.BadRequest
-                };
-
-            }
-
-            return new Response<string>
-            {
-                IsSuccessful = false,
-                Message = "Response NotSuccessful",
-                ResponseCode = HttpStatusCode.BadRequest
-            };
-        }
-
-        public async Task<Response<string>> AddComment(CommentDto commentDto)
-        {
-            var user = await _unitOfWork.UserRepository.GetUser(commentDto.UserId);
-            var trips = await _unitOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
-            var trip = trips.FirstOrDefault(x => x.CarId == commentDto.CarId);
-            if (user != null)
-            {
-                if (trip != null)
-                {
-                    var comment = _mapper.Map<Comment>(commentDto);
-                    var result = await _unitOfWork.CommentRepository.AddComment(comment);
-                    if (result)
-                    {
-                        return new Response<string>
-                        {
-                            IsSuccessful = true,
-                            Message = "Comment Added Successfully",
-                            ResponseCode = HttpStatusCode.OK
-                        };
-                    }
-                }
-                return new Response<string>
-                {
-                    IsSuccessful = false,
-                    Message = "Trip not Completed",
-                    ResponseCode = HttpStatusCode.BadRequest
-                };
-
-            }
-            return new Response<string>
-            {
-                IsSuccessful = false,
-                Message = "Comment Not Successfull",
-                ResponseCode = HttpStatusCode.BadRequest
-            };
-
-        }
-        public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
-        {
-            
-            User user = await _unitOfWork.UserRepository.GetUser(userId);
             if (user != null)
             {
                 var result = _mapper.Map<UserDetailResponseDTO>(user);
@@ -223,6 +161,166 @@ namespace RentalCarCore.Services
                 Message = "No Registered Users",
                 ResponseCode = HttpStatusCode.NoContent,
                 IsSuccessful = false
+            };
+        }
+
+        public async Task<Response<PaymentResponseDTO>> UserPayment(PaymentRequestDTO pay)
+        {
+            var trip = await _unitOfWork.TripRepository.GetCarTrip(pay.TripId);
+            if (trip != null)
+            {
+                TransactionInitializeRequest request = new()
+                {
+                    AmountInKobo = pay.Amount * 100,
+                    Email = pay.Email,
+                    Reference = GenerateReference(),
+                    Currency = "NGN",
+                    CallbackUrl = ""
+                };
+                TransactionInitializeResponse transResponse = payStackApi.Transactions.Initialize(request);
+                if (transResponse.Status)
+                {
+                    var trans = TransactionMapping.GetTransaction(pay, request.Reference, trip.Id);
+                    await _unitOfWork.TransactionRepository.AddTransaction(trans);
+                    var result = TransactionMapping.GetPayment(trans, transResponse.Data.AuthorizationUrl);
+                    return new Response<PaymentResponseDTO>
+                    {
+                        Data = result,
+                        IsSuccessful = true,
+                        Message = transResponse.Message,
+                        ResponseCode = HttpStatusCode.OK
+                    };
+                }
+                return new Response<PaymentResponseDTO>
+                {
+                    Data = null,
+                    IsSuccessful = false,
+                    Message = transResponse.Message,
+                    ResponseCode = HttpStatusCode.BadRequest
+                };
+            }
+
+            return new Response<PaymentResponseDTO>
+            {
+                Data = null,
+                IsSuccessful = false,
+                Message = "Trip Not Found",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
+
+        public Response<string> VerifyPayment(string reference)
+        {
+            TransactionVerifyResponse response = payStackApi.Transactions.Verify(reference);
+            if (response.Data.Status == "success")
+            {
+                var trans = _unitOfWork.TransactionRepository.GetTransactionReference(reference);
+                if (trans != null)
+                {
+                    trans.Status = "Successful";
+                    _unitOfWork.TransactionRepository.UpdateTransaction(trans);
+                    return new Response<string>
+                    {
+                        IsSuccessful = true,
+                        Message = response.Data.Status,
+                        ResponseCode = HttpStatusCode.OK
+                    };
+                }
+                return new Response<string>
+                {
+                    IsSuccessful = false,
+                    Message = "Transaction not Found",
+                    ResponseCode = HttpStatusCode.BadRequest
+                };
+            }
+
+            return new Response<string>
+            {
+                IsSuccessful = false,
+                Message = "unsuccessful",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
+
+        private static string GenerateReference()
+        {
+            return Guid.NewGuid().ToString();
+        }
+
+        public async Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber)
+        {
+            var dealers = await _unitOfWork.DealerRepository.GetDealersAsync();
+            var response = _mapper.Map<IEnumerable<GetAllDealerResponseDto>>(dealers);
+            if (dealers != null)
+            {
+                var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
+                {
+                    Data = res,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>()
+            {
+                ResponseCode = HttpStatusCode.NoContent,
+            };
+        }
+
+        public async Task<Response<DealerResponseDTO>> AddDealer(DealerRequestDTO dealer)
+        {
+            var user = await _unitOfWork.UserRepository.GetUser(dealer.UserId);
+            
+            User user = await _unitOfWork.UserRepository.GetUser(userId);
+            if (user != null)
+            {
+                var dealers = await _unitOfWork.DealerRepository.GetDealer(dealer.UserId);
+                if (dealers == null)
+                {
+                    var correct = _mapper.Map<Dealer>(dealer);
+                    var answer = await _unitOfWork.DealerRepository.AddNewDealer(correct);
+                    var result = _mapper.Map<DealerResponseDTO>(correct);
+                    return new Response<DealerResponseDTO>
+                    {
+                        Data = result,
+                        IsSuccessful = true,
+                        Message = "Successful",
+                        ResponseCode = HttpStatusCode.OK
+                    };
+                }
+
+                return new Response<DealerResponseDTO>
+                {
+                    Data = null,
+                    IsSuccessful = false,
+                    Message = "Dealer Found",
+                    ResponseCode = HttpStatusCode.BadRequest
+                };
+            }
+            return new Response<DealerResponseDTO>
+            {
+                Data = null,
+                IsSuccessful = false,
+                Message = "Register as a User",
+                ResponseCode = HttpStatusCode.BadRequest
+            };
+        }
+    
+        public async Task<Response<PaginationModel<IEnumerable<AllTripsDto>>>> GetAllTripsAsync(int pageSize, int pageNumber)
+        {
+            var trips = await _unitOfWork.UserRepository.GetTripsAsync();
+            var response = _mapper.Map<IEnumerable<AllTripsDto>>(trips);
+            if (trips != null)
+            {
+                var res = PaginationClass.PaginationAsync(response, pageSize, pageNumber);
+                return new Response<PaginationModel<IEnumerable<AllTripsDto>>>()
+                {
+                    Data = res,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<PaginationModel<IEnumerable<AllTripsDto>>>()
+            {
+                ResponseCode = HttpStatusCode.NoContent,
             };
         }
 

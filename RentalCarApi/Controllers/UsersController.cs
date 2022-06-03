@@ -15,26 +15,26 @@ using Serilog;
 
 namespace RentalCarApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
         private readonly IImageService _imageService;
-        private readonly UserManager<User> _userMgr;
+        private readonly UserManager<User> _userManager;
         public UsersController(IUserService userService, IImageService imageService, UserManager<User> userManager)
         {
             _userService = userService;
             _imageService = imageService;
-            _userMgr = userManager;
+            _userManager = userManager;
         }
 
-        [HttpGet("UserId/GetUserTrips")]
-        public async Task<IActionResult> GetUserTrips(string Userid)
+        [HttpGet("Id/GetUserTrips")]
+        public async Task<IActionResult> GetUserTrips(string Id)
         {
             try
             {
-                var result = await _userService.GetTrips(Userid);
+                var result = await _userService.GetTrips(Id);
                 if (result.IsSuccessful)
                 {
                     return Ok(result);
@@ -54,18 +54,27 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [HttpPatch("UploadImage")]
-        public async Task<IActionResult> UploadImage([FromForm] AddImageDto imageDto)
+        [HttpPatch("Id/UploadImage")]
+        public async Task<IActionResult> UploadImage(string Id, [FromForm] AddImageDto imageDto)
         {
             try
             {
-                var upload = await _imageService.UploadAsync(imageDto.Image);
-                var result = new ImageAddedDto()
+                var user = await _userManager.FindByIdAsync(Id);
+                
+                if(user != null)
                 {
-                    PublicId = upload.PublicId,
-                    Url = upload.Url.ToString()
-                };
-                return Ok(result);
+                    var upload = await _imageService.UploadAsync(imageDto.Image);
+                    var result = new ImageAddedDto()
+                    {
+                        PublicId = upload.PublicId,
+                        Url = upload.Url.ToString()
+                    };
+
+                    user.Avatar = result.Url;
+                    await _userManager.UpdateAsync(user);
+                    return Ok(result);
+                }
+                return NotFound("User not found");
             }
             catch (ArgumentException ex)
             {
@@ -73,7 +82,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut]
         [Route("Id")]
         public async Task<IActionResult> UpdatePassword(string Id, UpdateUserDto updateUserdDto)
@@ -112,67 +121,13 @@ namespace RentalCarApi.Controllers
 
         }
 
-        [HttpPost("AddRating")]
-        public async Task<IActionResult> AddRating(RatingDto ratingDto)
+       
+        [HttpGet("Id")]
+        public async Task<IActionResult>GetUser(string Id)
         {
             try
             {
-                if(!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                if (ModelState.IsValid)
-                {
-                    var result = await _userService.AddRating(ratingDto);
-                    return Ok(result);
-                }
-                return BadRequest(ModelState);
-            }
-            catch(ArgumentException ex)
-            {
-                Log.Logger.Error(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch(Exception ex)
-            {
-                Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after 5 minutes");
-            }
-        }
-        [HttpPost("AddComment")]
-        public async Task<IActionResult> AddComment(CommentDto commentDto)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                if (ModelState.IsValid)
-                {
-                    var result = await _userService.AddComment(commentDto);
-                    return Ok(result);
-                }
-                return BadRequest(ModelState);
-            }
-            catch (ArgumentException ex)
-            {
-                Log.Logger.Error(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                Log.Logger.Error(ex.Message);
-                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after 5 minutes");
-
-            }
-        }
-        [HttpGet("UserId")]
-        public async Task<IActionResult>GetUser(string userId)
-        {
-            try
-            {
-                return Ok(await _userService.GetUser(userId));
+                return Ok(await _userService.GetUser(Id));
             }
             catch (ArgumentException argex)
             {
@@ -185,12 +140,87 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [HttpGet("GetAllUsers")]
-       [Authorize(Roles = "Admin")]
+        [HttpGet()]
+        //[Authorize(Roles = "Admin")]
        public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
         {
             var response = await _userService.GetUsersAsync(pageSize, pageNumber);
             return StatusCode((int)response.ResponseCode, response);
+        }
+
+        [HttpGet("GetAllDealers")]
+        public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var res = await _userService.GetAllDealersAsync(pageSize, pageNumber);
+                    return StatusCode((int)res.ResponseCode, res);
+                }
+                return BadRequest(ModelState);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after some time");
+            }
+        }
+
+        [HttpGet("GetAllTrips")]
+        public async Task<IActionResult> GetAllTrips(int pageSize, int pageNumber)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    var res = await _userService.GetAllTripsAsync(pageSize, pageNumber);
+                    return StatusCode((int)res.ResponseCode, res);
+                }
+                return BadRequest(ModelState);
+
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again later");
+            }
+        }
+
+        [HttpPost("AddNewDealer")]
+        public async Task<IActionResult> AddNewDealer(DealerRequestDTO requestDTO)
+        {
+            try
+            {
+                var result = await _userService.AddDealer(requestDTO);
+                if (result.IsSuccessful)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Log.Logger.Error(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
+            }
         }
 
         [HttpPatch("DeleteUser")]
