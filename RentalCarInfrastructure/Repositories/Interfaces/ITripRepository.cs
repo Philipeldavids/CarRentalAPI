@@ -8,5 +8,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     {
         Task<Trip> GetCarTrip(string tripId);
         Task<bool> BookATrip(Trip trip);
+        Task<List<Trip>> GetAllTransactionByUserAsyc(string userId);
     }
 }

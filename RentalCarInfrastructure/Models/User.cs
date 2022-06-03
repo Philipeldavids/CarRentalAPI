@@ -11,6 +11,8 @@ namespace RentalCarInfrastructure.Models
 {
     public class User : IdentityUser
     {
+        public string PublicId { get; set; }
+
         [StringLength(50, MinimumLength = 2, ErrorMessage = DataAnnotationsHelper.FirstNameValidator)]
         [Required]
         public string FirstName { get; set; }

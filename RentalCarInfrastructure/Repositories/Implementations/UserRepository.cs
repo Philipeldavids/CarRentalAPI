@@ -11,6 +11,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly AppDbContext _appDbContext;
+
         public UserRepository(AppDbContext appDbContext) : base(appDbContext)
         {
             _appDbContext = appDbContext;

@@ -21,6 +21,6 @@ namespace RentalCarInfrastructure.Models
         [StringLength(250, MinimumLength = 5, ErrorMessage = DataAnnotationsHelper.ThumbnailValidator)]
         public string Thumbnail { get; set; }
 
-        public bool IsActive { get; set; }
+        public User User { get; set; }
     }
 }

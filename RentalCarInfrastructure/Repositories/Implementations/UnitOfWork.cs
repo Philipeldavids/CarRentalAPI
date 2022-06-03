@@ -1,9 +1,6 @@
 ﻿using RentalCarInfrastructure.Context;
 using RentalCarInfrastructure.Interfaces;
 using RentalCarInfrastructure.Repositories.Interfaces;
-using System;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RentalCarInfrastructure.Repositories.Implementations
 {

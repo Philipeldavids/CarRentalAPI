@@ -3,6 +3,7 @@ using RentalCarCore.Dtos.Request;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RentalCarCore.Utilities.Pagination;
+using RentalCarInfrastructure.Models;
 
 namespace RentalCarCore.Interfaces
 {
@@ -20,5 +21,7 @@ namespace RentalCarCore.Interfaces
 
         Task<Response<PaginationModel<IEnumerable<GetAllDealerResponseDto>>>> GetAllDealersAsync(int pageSize, int pageNumber);
         Task<Response<PaginationModel<IEnumerable<AllTripsDto>>>> GetAllTripsAsync(int pageSize, int pageNumber);
+        Task<Response<User>> DeleteUser(string userId);
+        Task<Response<List<TransactionResponseDto>>> GetAllTransactionByUser(string userId);
     }
 }

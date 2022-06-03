@@ -19,6 +19,9 @@ namespace RentalCarInfrastructure.Models
         [StringLength(50, MinimumLength = 3, ErrorMessage = DataAnnotationsHelper.StatusValidator)]
         public string Status { get; set; }
 
+        public bool IsRated { get; set; }
+        public bool IsCommented { get; set; }
+
         public DateTime PickUpDate { get; set; }
         public DateTime ReturnDate { get; set; }
         public virtual  Transaction  Transactions { get; set; }

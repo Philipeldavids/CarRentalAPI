@@ -115,6 +115,13 @@ namespace RentalCarCore.Services
         public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
         {
             User user = await _unitOfWork.UserRepository.GetUser(userId);
+        public async Task<Response<string>> AddRating(RatingDto ratingDto)
+        {
+            var user = await _unitOfWork.UserRepository.GetUser(ratingDto.UserId);
+            var trips = await _unitOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
+            var trip = trips.FirstOrDefault(x => x.CarId == ratingDto.CarId);
+            
+
             if (user != null)
             {
                 var result = _mapper.Map<UserDetailResponseDTO>(user);
@@ -262,6 +269,8 @@ namespace RentalCarCore.Services
         public async Task<Response<DealerResponseDTO>> AddDealer(DealerRequestDTO dealer)
         {
             var user = await _unitOfWork.UserRepository.GetUser(dealer.UserId);
+            
+            User user = await _unitOfWork.UserRepository.GetUser(userId);
             if (user != null)
             {
                 var dealers = await _unitOfWork.DealerRepository.GetDealer(dealer.UserId);
@@ -314,6 +323,66 @@ namespace RentalCarCore.Services
                 ResponseCode = HttpStatusCode.NoContent,
             };
         }
+
+        public async Task<Response<User>> DeleteUser(string userId)
+        {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null)
+                {
+                    return new Response<User>()
+                    {
+                        Message = "User Not Found",
+                        ResponseCode = HttpStatusCode.NoContent,
+                        IsSuccessful = false
+                    };
+                }
+                user.IsActive = false;
+                await _userManager.UpdateAsync(user);
+
+                return new Response<User>()
+                {
+                    Message = "User Successfully Deleted",
+                    ResponseCode = HttpStatusCode.OK,
+                    IsSuccessful = true
+                };
+        }
+
+        public async Task<Response<List<TransactionResponseDto>>> GetAllTransactionByUser(string userId)
+        {
+            var trips = await _unitOfWork.TripRepository.GetAllTransactionByUserAsyc(userId);
+            if(trips != null)
+            {
+                var transaction = new List<TransactionResponseDto>();
+                
+                foreach (var trip in trips)
+                {
+                    var car = await _unitOfWork.CarRepository.GetACarDetailAsync(trip.CarId);
+                    var transactionResponseDto = new TransactionResponseDto()
+                    {
+                        CarBooked = car.Model + ' ' + car.YearOfMan,
+                        Amount = trip.Transactions.Amount,
+                        DateOfPayment = trip.Transactions.CreatedAt,
+                        Status = trip.Transactions.Status,
+                        TripId = trip.Id,
+                        PaymentMethod = trip.Transactions.PaymentMethod,
+                        TransactionRef = trip.Transactions.TransactionRef
+                    };
+                    transaction.Add(transactionResponseDto);
+                }
+                return new Response<List<TransactionResponseDto>>()
+                {
+                    Data = transaction,
+                    Message = "List of Transaction Details",
+                    IsSuccessful = true,
+                    ResponseCode = HttpStatusCode.OK
+                };
+            }
+            return new Response<List<TransactionResponseDto>>
+            {
+                Message = "Opps!, something went wrong, No Transaction found",
+                IsSuccessful = false,
+                ResponseCode = HttpStatusCode.NoContent
+            };
+        }
     }
 }
-

@@ -222,5 +222,28 @@ namespace RentalCarApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
             }
         }
+
+        [HttpPatch("DeleteUser")]
+       // [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteAUser(string userId)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var deletedUser = await _userService.DeleteUser(userId);
+            return StatusCode((int)deletedUser.ResponseCode, deletedUser);
+        }
+
+        [HttpGet("GetAllUserTransactionDetails")]
+        public async Task<IActionResult> GetAllUserTransactionDetails(string userId)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var transactionDetails = await _userService.GetAllTransactionByUser(userId);
+            return StatusCode((int) transactionDetails.ResponseCode, transactionDetails);
+        }
     }
 }

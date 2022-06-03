@@ -207,6 +207,9 @@ namespace RentalCarInfrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsVerify")
                         .HasColumnType("boolean");
 
@@ -274,6 +277,9 @@ namespace RentalCarInfrastructure.Migrations
                     b.Property<bool>("Driver")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsTrack")
                         .HasColumnType("boolean");
 
@@ -319,6 +325,9 @@ namespace RentalCarInfrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
@@ -390,6 +399,9 @@ namespace RentalCarInfrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsFeature")
                         .HasColumnType("boolean");
 
@@ -420,6 +432,9 @@ namespace RentalCarInfrastructure.Migrations
                     b.Property<string>("DealerId")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Latitude")
                         .HasMaxLength(125)
@@ -499,6 +514,9 @@ namespace RentalCarInfrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
 
@@ -529,6 +547,9 @@ namespace RentalCarInfrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
@@ -569,6 +590,9 @@ namespace RentalCarInfrastructure.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp without time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("ModifiedAt")
                         .HasColumnType("timestamp without time zone");
@@ -744,11 +768,13 @@ namespace RentalCarInfrastructure.Migrations
 
             modelBuilder.Entity("RentalCarInfrastructure.Models.Blog", b =>
                 {
-                    b.HasOne("RentalCarInfrastructure.Models.User", null)
+                    b.HasOne("RentalCarInfrastructure.Models.User", "User")
                         .WithMany("Blogs")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RentalCarInfrastructure.Models.Car", b =>
