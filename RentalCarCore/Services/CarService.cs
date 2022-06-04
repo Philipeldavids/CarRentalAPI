@@ -168,7 +168,7 @@ namespace RentalCarCore.Services
         {
             var user = await _uintOfWork.UserRepository.GetUser(ratingDto.UserId);
             var trips = await _uintOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
-            var trip = trips.Where(x => x.Id == ratingDto.TripId && x.Status == "Done");
+            var trip = trips.Where(x => x.Id == ratingDto.TripId && x.Status == "Done" && x.IsRated == false).FirstOrDefault();
 
             if (user != null)
             {
@@ -178,6 +178,8 @@ namespace RentalCarCore.Services
                     var result = await _uintOfWork.RatingRepository.AddRating(rate);
                     if (result)
                     {
+                        trip.IsRated = true;
+                        await _uintOfWork.TripRepository.UpdateATrip(trip);
                         return new Response<string>
                         {
                             IsSuccessful = true,
@@ -207,7 +209,7 @@ namespace RentalCarCore.Services
         {
             var user = await _uintOfWork.UserRepository.GetUser(commentDto.UserId);
             var trips = await _uintOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
-            var trip = trips.Where(x => x.Id == commentDto.TripId && x.Status == "Done");
+            var trip = trips.Where(x => x.Id == commentDto.TripId && x.Status == "Done" && x.IsCommented == false).FirstOrDefault();
             if (user != null)
             {
                 if (trip != null)
@@ -216,6 +218,8 @@ namespace RentalCarCore.Services
                     var result = await _uintOfWork.CommentRepository.AddComment(comment);
                     if (result)
                     {
+                        trip.IsCommented = true;
+                        await _uintOfWork.TripRepository.UpdateATrip(trip);
                         return new Response<string>
                         {
                             IsSuccessful = true,

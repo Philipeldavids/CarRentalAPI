@@ -9,6 +9,7 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     {
         Task<IEnumerable<Car>> GetAllFeatureCarsAsync();
         Task<Car> GetCarDetailsAsync(string carId);
+        Task<Car> GetACarDetailAsync(string carId);
         Task<IEnumerable<Car>> GetAllCarsAsync();
         Task<Dictionary<Car, bool>> SearchCarByDateAndLocationAsync(string Location, DateTime pickupDate, DateTime returnDate);
         Task<IEnumerable<Car>> GetAllOfferCarsAsync();
@@ -21,7 +22,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<Car> GetCarById(string carId);
         void EditCarByDealer(Car car);
 
-        Task<IEnumerable<Car>> GetCarByLocationAsync(Location state);
-       // Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate);
+       
     }
 }
