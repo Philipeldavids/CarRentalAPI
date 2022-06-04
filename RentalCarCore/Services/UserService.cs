@@ -44,10 +44,33 @@ namespace RentalCarCore.Services
 
             if (user != null)
             {
-                var trips = await _unitOfWork.UserRepository.GetTripsByUserId(UserId);
+                var trips = await _unitOfWork.CarRepository.GetCarTripsByUserIdAsync(UserId);
+               
                 if (trips != null)
                 {
-                    var result = _mapper.Map<List<TripsDTO>>(trips);
+                    List<TripsDTO> result = new();
+
+                    foreach(var item in trips)
+                    {
+                        var car = await _unitOfWork.CarRepository.GetCarById(item.CarId);
+
+                        TripsDTO trip = new TripsDTO()
+                        {
+                            TripId = item.Id,
+                            CarId = item.CarId,
+                            Color = car.Color,
+                            Model = car.Model,
+                            Year = car.YearOfMan,
+                            Status = item.Status,
+                            PickUpDate = item.PickUpDate,
+                            ReturnDate = item.ReturnDate
+
+                        };
+
+                        result.Add(trip);
+
+                    }
+                    //var result = _mapper.Map<List<TripsDTO>>(trips);
                     return new Response<List<TripsDTO>>()
                     {
                         Data = result,

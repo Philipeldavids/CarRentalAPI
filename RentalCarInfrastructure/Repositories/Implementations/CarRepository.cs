@@ -164,7 +164,14 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return carQuery;
         }
 
-        
+        public async Task<List<Trip>> GetCarTripsByUserIdAsync(string userId)
+        {
+            var trips = await _appDbContext.Trips
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+            
+            return trips;
+        }
     }
 }
 

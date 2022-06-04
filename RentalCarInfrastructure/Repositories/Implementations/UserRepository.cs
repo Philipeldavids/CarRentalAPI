@@ -29,7 +29,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return result;
         }
 
-        public async Task<List<Trip>> GetTripsByUserId(string userId)
+        public async Task<List<Trip>> GetTripsByUserIdAsync(string userId)
         {
             var trips = await _appDbContext.Trips.Where(x => x.UserId == userId)
                 .Include(y => y.Transactions).ToListAsync();

@@ -22,6 +22,8 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
         Task<Car> GetCarById(string carId);
         void EditCarByDealer(Car car);
 
-       
+        Task<List<Trip>> GetCarTripsByUserIdAsync(string userId);
+
+
     }
 }

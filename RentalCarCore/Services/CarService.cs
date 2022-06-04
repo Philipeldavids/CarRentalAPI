@@ -167,7 +167,7 @@ namespace RentalCarCore.Services
         public async Task<Response<string>> AddRating(RatingDto ratingDto)
         {
             var user = await _uintOfWork.UserRepository.GetUser(ratingDto.UserId);
-            var trips = await _uintOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
+            var trips = await _uintOfWork.UserRepository.GetTripsByUserIdAsync(ratingDto.UserId);
             var trip = trips.Where(x => x.Id == ratingDto.TripId && x.Status == "Done" && x.IsRated == false).FirstOrDefault();
 
             if (user != null)
@@ -208,7 +208,7 @@ namespace RentalCarCore.Services
         public async Task<Response<string>> AddComment(CommentDto commentDto)
         {
             var user = await _uintOfWork.UserRepository.GetUser(commentDto.UserId);
-            var trips = await _uintOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
+            var trips = await _uintOfWork.UserRepository.GetTripsByUserIdAsync(commentDto.UserId);
             var trip = trips.Where(x => x.Id == commentDto.TripId && x.Status == "Done" && x.IsCommented == false).FirstOrDefault();
             if (user != null)
             {
