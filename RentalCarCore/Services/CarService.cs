@@ -247,25 +247,26 @@ namespace RentalCarCore.Services
 
         public async Task<Response<Trip>> BookTripAsync(TripBookingRequestDTO tripRequest)
         {
-            var available = await _uintOfWork.CarRepository.GetACarTripAsync(tripRequest.CarId);
-            if (available != null)
+            var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(tripRequest.CarId);
+            var user = await _uintOfWork.UserRepository.GetUser(tripRequest.UserId);
+            if (user == null || car == null)
             {
                 return new Response<Trip>
                 {
-                    Data = available,
+                    Data = null,
                     IsSuccessful = false,
-                    Message = "Car not available",
+                    Message = "No Record Found",
                     ResponseCode = HttpStatusCode.BadRequest
                 };
             }
-            var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(tripRequest.CarId);
-            var user = await _uintOfWork.UserRepository.GetUser(tripRequest.UserId);
-            if(user != null && car != null)
+
+            var lastTrip = car.Trips.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+            if(lastTrip.ReturnDate < tripRequest.PickupDate)
             {
                 var trip = new Trip()
                 {
-                    PickUpDate = DateTime.Now,
-                    ReturnDate = DateTime.Now,
+                    PickUpDate = tripRequest.PickupDate,
+                    ReturnDate = tripRequest.ReturnDate,
                     CarId = car.Id,
                     UserId = user.Id,
                     Status = "Pending"
@@ -279,11 +280,13 @@ namespace RentalCarCore.Services
                     ResponseCode = HttpStatusCode.OK
                 };
             }
+            
             return new Response<Trip>
             {
+                Data = lastTrip,
                 IsSuccessful = false,
-                Message = "NotSuccessful",
-                ResponseCode = HttpStatusCode.BadRequest
+                Message = "Car is not avaliable",
+                ResponseCode = HttpStatusCode.Forbidden
             };
         }
 

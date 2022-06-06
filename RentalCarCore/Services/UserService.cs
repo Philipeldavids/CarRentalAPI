@@ -370,18 +370,22 @@ namespace RentalCarCore.Services
                 
                 foreach (var trip in trips)
                 {
-                    var car = await _unitOfWork.CarRepository.GetACarDetailAsync(trip.CarId);
-                    var transactionResponseDto = new TransactionResponseDto()
+                    if(trip.Transactions != null)
                     {
-                        CarBooked = car.Model + ' ' + car.YearOfMan,
-                        Amount = trip.Transactions.Amount,
-                        DateOfPayment = trip.Transactions.CreatedAt,
-                        Status = trip.Transactions.Status,
-                        TripId = trip.Id,
-                        PaymentMethod = trip.Transactions.PaymentMethod,
-                        TransactionRef = trip.Transactions.TransactionRef
-                    };
-                    transaction.Add(transactionResponseDto);
+                        var car = await _unitOfWork.CarRepository.GetACarDetailAsync(trip.CarId);
+                        var transactionResponseDto = new TransactionResponseDto()
+                        {
+                            CarBooked = car.Model + ' ' + car.YearOfMan,
+                            Amount = trip.Transactions.Amount,
+                            DateOfPayment = trip.Transactions.CreatedAt,
+                            Status = trip.Transactions.Status,
+                            TripId = trip.Id,
+                            PaymentMethod = trip.Transactions.PaymentMethod,
+                            TransactionRef = trip.Transactions.TransactionRef
+                        };
+                        transaction.Add(transactionResponseDto);
+                    }
+                   
                 }
                 return new Response<List<TransactionResponseDto>>()
                 {
