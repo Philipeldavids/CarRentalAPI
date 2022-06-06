@@ -41,7 +41,7 @@ namespace RentalCarCore.Services
             {
                 throw new Exception("");
             }
-            if (user != null)
+            if (user != null && user.EmailConfirmed == true)
             {
                 if (await _userManager.CheckPasswordAsync(user, userRequestDto.Password))
                 {
@@ -74,10 +74,16 @@ namespace RentalCarCore.Services
                     IsSuccessful = false,
                 };
             }
-            throw new AccessViolationException("Invalid Credentails");
+            return new Response<UserResponseDto>
+            {
+                Message = "Invalid Credentails Or Unconfirmed user",
+                ResponseCode = HttpStatusCode.BadRequest,
+                IsSuccessful = false,
+            };
+           
         }
 
-        public async Task<UserResponseDto> RegisterAsync(RegistrationDto registrationRequest)
+        public async Task<Response<UserResponseDto>> RegisterAsync(RegistrationDto registrationRequest)
         {
             User user = _mapper.Map<User>(registrationRequest);
             user.UserName = registrationRequest.Email;
@@ -88,7 +94,6 @@ namespace RentalCarCore.Services
                 await _userManager.AddToRoleAsync(user, "Customer");
 
                 var emailToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var response = _mapper.Map<RegistrationDto>(user);
                 var answer = new UserResponseDto
                 {
                     Id = user.Id,
@@ -98,7 +103,13 @@ namespace RentalCarCore.Services
 
                 };
                 await _confirmationMailService.SendAConfirmationEmail(answer, "ConfirmEmail.html");
-                return answer;
+                return new Response<UserResponseDto>
+                {
+                    Data = null,
+                    Message = "Comfirmation Send to your Mail",
+                    ResponseCode = HttpStatusCode.OK,
+                    IsSuccessful = true
+                };
             }
             string errors = result.Errors.Aggregate(string.Empty, (current, error) => current + (error.Description + Environment.NewLine));
             throw new ArgumentException(errors);

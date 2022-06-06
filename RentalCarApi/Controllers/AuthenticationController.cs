@@ -52,8 +52,8 @@ namespace RentalCarCore.Controllers
                 {
                     return BadRequest();
                 }
-                await _authentication.RegisterAsync((userRequest));
-                return Ok();
+                var result = await _authentication.RegisterAsync((userRequest));
+                return Ok(result);
             }
             catch (ArgumentException argex)
             {
