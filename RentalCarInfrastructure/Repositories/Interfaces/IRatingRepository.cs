@@ -7,5 +7,6 @@ namespace RentalCarInfrastructure.Repositories.Interfaces
     public interface IRatingRepository
     {
         Task<bool> AddRating(Rating rate);
+       
     }
 }

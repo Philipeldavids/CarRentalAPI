@@ -19,5 +19,8 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             var result = await Add(rate);
             return result;
         }
+
+       
+
     }
 }

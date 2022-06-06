@@ -167,8 +167,8 @@ namespace RentalCarCore.Services
         public async Task<Response<string>> AddRating(RatingDto ratingDto)
         {
             var user = await _uintOfWork.UserRepository.GetUser(ratingDto.UserId);
-            var trips = await _uintOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
-            var trip = trips.Where(x => x.Id == ratingDto.TripId && x.Status == "Done");
+            var trips = await _uintOfWork.UserRepository.GetTripsByUserIdAsync(ratingDto.UserId);
+            var trip = trips.Where(x => x.Id == ratingDto.TripId && x.Status == "Done" && x.IsRated == false).FirstOrDefault();
 
             if (user != null)
             {
@@ -178,6 +178,8 @@ namespace RentalCarCore.Services
                     var result = await _uintOfWork.RatingRepository.AddRating(rate);
                     if (result)
                     {
+                        trip.IsRated = true;
+                        await _uintOfWork.TripRepository.UpdateATrip(trip);
                         return new Response<string>
                         {
                             IsSuccessful = true,
@@ -206,8 +208,8 @@ namespace RentalCarCore.Services
         public async Task<Response<string>> AddComment(CommentDto commentDto)
         {
             var user = await _uintOfWork.UserRepository.GetUser(commentDto.UserId);
-            var trips = await _uintOfWork.UserRepository.GetTripsByUserId(commentDto.UserId);
-            var trip = trips.Where(x => x.Id == commentDto.TripId && x.Status == "Done");
+            var trips = await _uintOfWork.UserRepository.GetTripsByUserIdAsync(commentDto.UserId);
+            var trip = trips.Where(x => x.Id == commentDto.TripId && x.Status == "Done" && x.IsCommented == false).FirstOrDefault();
             if (user != null)
             {
                 if (trip != null)
@@ -216,6 +218,8 @@ namespace RentalCarCore.Services
                     var result = await _uintOfWork.CommentRepository.AddComment(comment);
                     if (result)
                     {
+                        trip.IsCommented = true;
+                        await _uintOfWork.TripRepository.UpdateATrip(trip);
                         return new Response<string>
                         {
                             IsSuccessful = true,
@@ -243,25 +247,26 @@ namespace RentalCarCore.Services
 
         public async Task<Response<Trip>> BookTripAsync(TripBookingRequestDTO tripRequest)
         {
-            var available = await _uintOfWork.CarRepository.GetACarTripAsync(tripRequest.CarId);
-            if (available != null)
+            var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(tripRequest.CarId);
+            var user = await _uintOfWork.UserRepository.GetUser(tripRequest.UserId);
+            if (user == null || car == null)
             {
                 return new Response<Trip>
                 {
-                    Data = available,
+                    Data = null,
                     IsSuccessful = false,
-                    Message = "Car not available",
+                    Message = "No Record Found",
                     ResponseCode = HttpStatusCode.BadRequest
                 };
             }
-            var car = await _uintOfWork.CarRepository.GetCarDetailsAsync(tripRequest.CarId);
-            var user = await _uintOfWork.UserRepository.GetUser(tripRequest.UserId);
-            if(user != null && car != null)
+
+            var lastTrip = car.Trips.OrderByDescending(x => x.CreatedAt).FirstOrDefault();
+            if(lastTrip.ReturnDate < tripRequest.PickupDate)
             {
                 var trip = new Trip()
                 {
-                    PickUpDate = DateTime.Now,
-                    ReturnDate = DateTime.Now,
+                    PickUpDate = tripRequest.PickupDate,
+                    ReturnDate = tripRequest.ReturnDate,
                     CarId = car.Id,
                     UserId = user.Id,
                     Status = "Pending"
@@ -275,11 +280,13 @@ namespace RentalCarCore.Services
                     ResponseCode = HttpStatusCode.OK
                 };
             }
+            
             return new Response<Trip>
             {
+                Data = lastTrip,
                 IsSuccessful = false,
-                Message = "NotSuccessful",
-                ResponseCode = HttpStatusCode.BadRequest
+                Message = "Car is not avaliable",
+                ResponseCode = HttpStatusCode.Forbidden
             };
         }
 

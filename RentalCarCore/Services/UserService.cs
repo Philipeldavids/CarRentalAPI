@@ -25,7 +25,6 @@ namespace RentalCarCore.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        private readonly IGenericRepository<Rating> _ratingRepository;
         private readonly IConfiguration _configuration;
         private PayStackApi payStackApi;
         private static string PbKey = "FLWPUBK_TEST-23f93b703e152ec64d3fc3b8dddfcb91-X";
@@ -35,7 +34,6 @@ namespace RentalCarCore.Services
             _userManager = userManager;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
-            _ratingRepository = ratingRepository;
             _configuration = configuration;
             payStackApi = new PayStackApi(_configuration["Payment:PaystackSK"]);
         }
@@ -46,10 +44,33 @@ namespace RentalCarCore.Services
 
             if (user != null)
             {
-                var trips = await _unitOfWork.UserRepository.GetTripsByUserId(UserId);
+                var trips = await _unitOfWork.CarRepository.GetCarTripsByUserIdAsync(UserId);
+               
                 if (trips != null)
                 {
-                    var result = _mapper.Map<List<TripsDTO>>(trips);
+                    List<TripsDTO> result = new();
+
+                    foreach(var item in trips)
+                    {
+                        var car = await _unitOfWork.CarRepository.GetCarById(item.CarId);
+
+                        TripsDTO trip = new TripsDTO()
+                        {
+                            TripId = item.Id,
+                            CarId = item.CarId,
+                            Color = car.Color,
+                            Model = car.Model,
+                            Year = car.YearOfMan,
+                            Status = item.Status,
+                            PickUpDate = item.PickUpDate,
+                            ReturnDate = item.ReturnDate
+
+                        };
+
+                        result.Add(trip);
+
+                    }
+                    //var result = _mapper.Map<List<TripsDTO>>(trips);
                     return new Response<List<TripsDTO>>()
                     {
                         Data = result,
@@ -115,12 +136,6 @@ namespace RentalCarCore.Services
         public async Task<Response<UserDetailResponseDTO>> GetUser(string userId)
         {
             User user = await _unitOfWork.UserRepository.GetUser(userId);
-        public async Task<Response<string>> AddRating(RatingDto ratingDto)
-        {
-            var user = await _unitOfWork.UserRepository.GetUser(ratingDto.UserId);
-            var trips = await _unitOfWork.UserRepository.GetTripsByUserId(ratingDto.UserId);
-            var trip = trips.FirstOrDefault(x => x.CarId == ratingDto.CarId);
-            
 
             if (user != null)
             {
@@ -269,8 +284,7 @@ namespace RentalCarCore.Services
         public async Task<Response<DealerResponseDTO>> AddDealer(DealerRequestDTO dealer)
         {
             var user = await _unitOfWork.UserRepository.GetUser(dealer.UserId);
-            
-            User user = await _unitOfWork.UserRepository.GetUser(userId);
+           
             if (user != null)
             {
                 var dealers = await _unitOfWork.DealerRepository.GetDealer(dealer.UserId);
@@ -356,18 +370,22 @@ namespace RentalCarCore.Services
                 
                 foreach (var trip in trips)
                 {
-                    var car = await _unitOfWork.CarRepository.GetACarDetailAsync(trip.CarId);
-                    var transactionResponseDto = new TransactionResponseDto()
+                    if(trip.Transactions != null)
                     {
-                        CarBooked = car.Model + ' ' + car.YearOfMan,
-                        Amount = trip.Transactions.Amount,
-                        DateOfPayment = trip.Transactions.CreatedAt,
-                        Status = trip.Transactions.Status,
-                        TripId = trip.Id,
-                        PaymentMethod = trip.Transactions.PaymentMethod,
-                        TransactionRef = trip.Transactions.TransactionRef
-                    };
-                    transaction.Add(transactionResponseDto);
+                        var car = await _unitOfWork.CarRepository.GetACarDetailAsync(trip.CarId);
+                        var transactionResponseDto = new TransactionResponseDto()
+                        {
+                            CarBooked = car.Model + ' ' + car.YearOfMan,
+                            Amount = trip.Transactions.Amount,
+                            DateOfPayment = trip.Transactions.CreatedAt,
+                            Status = trip.Transactions.Status,
+                            TripId = trip.Id,
+                            PaymentMethod = trip.Transactions.PaymentMethod,
+                            TransactionRef = trip.Transactions.TransactionRef
+                        };
+                        transaction.Add(transactionResponseDto);
+                    }
+                   
                 }
                 return new Response<List<TransactionResponseDto>>()
                 {

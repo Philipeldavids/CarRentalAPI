@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Query;
 using RentalCarInfrastructure.Context;
 using RentalCarInfrastructure.Models;
 using RentalCarInfrastructure.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,6 +37,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                              .Include(x => x.CarDetails)
                              .Include(x => x.Images)
                              .Include(x => x.Ratings)
+                             .Include(x => x.Trips)
                              .Include(x => x.Comments).Where(y => y.Id == carId).FirstOrDefaultAsync();
             return carDetails;
         }
@@ -117,7 +119,6 @@ namespace RentalCarInfrastructure.Repositories.Implementations
 
 
         public async Task<IEnumerable<Car>> GetAllOfferCarsAsync()
-        /*public async Task<IEnumerable<Car>> GetCarByDateAsync(DateTime pickupDate, DateTime returnDate)
         {
             var query = _appDbContext.Cars
                 .Where(x => x.Images.Count > 0)
@@ -164,7 +165,14 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             return carQuery;
         }
 
-        }*/
+        public async Task<List<Trip>> GetCarTripsByUserIdAsync(string userId)
+        {
+            var trips = await _appDbContext.Trips
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+            
+            return trips;
+        }
     }
 }
 

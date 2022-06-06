@@ -5,7 +5,7 @@ using RentalCarInfrastructure.Repositories.Interfaces;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace RentalCarInfrastructure.Repositories.Implementations
 {
@@ -28,15 +28,20 @@ namespace RentalCarInfrastructure.Repositories.Implementations
             var result = await _appDbContext.Trips.FindAsync(tripId);
             return result;
         }
-    }
-}
+
         public async Task<List<Trip>> GetAllTransactionByUserAsyc(string userId)
         {
             var result = await _appDbContext.Trips
                 .Where(x => x.UserId == userId)
                 .Include(y => y.Transactions).ToListAsync();
             return result;
-                
+
+        }
+
+        public async Task<bool> UpdateATrip(Trip trip)
+        {
+            var result = await Update(trip);
+            return result;
         }
     }
 }
