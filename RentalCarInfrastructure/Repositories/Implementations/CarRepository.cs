@@ -37,6 +37,7 @@ namespace RentalCarInfrastructure.Repositories.Implementations
                              .Include(x => x.CarDetails)
                              .Include(x => x.Images)
                              .Include(x => x.Ratings)
+                             .Include(x => x.Trips)
                              .Include(x => x.Comments).Where(y => y.Id == carId).FirstOrDefaultAsync();
             return carDetails;
         }

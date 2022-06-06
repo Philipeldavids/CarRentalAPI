@@ -36,7 +36,8 @@ namespace RentalCarCore.Dtos.Response
         public bool IsTrack { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
         public virtual ICollection<Image> Images { get; set; }
-        
-            
+        public Trip LastTrip { get; set; }
+
+
     }
 }

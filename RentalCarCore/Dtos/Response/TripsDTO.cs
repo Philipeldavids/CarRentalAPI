@@ -15,6 +15,8 @@ namespace RentalCarCore.Dtos.Response
         public string Color { get; set; }
         public string TripId { get; set; }
         public string Status { get; set; }
+        public bool IsRated { get; set; }
+        public bool IsCommented { get; set; }
         public DateTime PickUpDate { get; set; }
         public DateTime ReturnDate { get; set; }
         

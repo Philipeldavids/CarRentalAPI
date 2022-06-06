@@ -56,6 +56,7 @@ namespace RentalCarCore.Dtos.Mapping
                 .ForMember(car => car.NavigationSystem, opt => opt.MapFrom(src => src.CarDetails.NavigationSystem))
                 .ForMember(car => car.RemoteStart, opt => opt.MapFrom(src => src.CarDetails.RemoteStart))
                 .ForMember(car => car.ThirdRowSeating, opt => opt.MapFrom(src => src.CarDetails.ThirdRowSeating))
+                .ForMember(car => car.LastTrip, opt => opt.MapFrom(src => src.Trips.OrderByDescending(x => x.CreatedAt).FirstOrDefault()))
             .ReverseMap();
 
             // Get All Users
