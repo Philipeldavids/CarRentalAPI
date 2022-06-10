@@ -63,7 +63,9 @@ namespace RentalCarCore.Services
                             Year = car.YearOfMan,
                             Status = item.Status,
                             PickUpDate = item.PickUpDate,
-                            ReturnDate = item.ReturnDate
+                            ReturnDate = item.ReturnDate,
+                            IsCommented = item.IsCommented,
+                            IsRated = item.IsRated
 
                         };
 

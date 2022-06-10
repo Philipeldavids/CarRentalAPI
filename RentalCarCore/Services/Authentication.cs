@@ -41,7 +41,7 @@ namespace RentalCarCore.Services
             {
                 throw new Exception("");
             }
-            if (user != null && user.EmailConfirmed == true)
+            if (user != null && user.EmailConfirmed == true  && user.IsActive == true)
             {
                 if (await _userManager.CheckPasswordAsync(user, userRequestDto.Password))
                 {

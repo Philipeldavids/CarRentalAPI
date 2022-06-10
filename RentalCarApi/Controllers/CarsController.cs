@@ -83,7 +83,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)carResponse.ResponseCode, carResponse);
         }
 
-        [Authorize(Policy = "RequireCustomerOnly")]
+        [Authorize(Policy = "RequireDealerAndCustomer")]
         [HttpPost("AddRating")]
         public async Task<IActionResult> AddRating(RatingDto ratingDto)
         {
@@ -93,12 +93,10 @@ namespace RentalCarApi.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                if (ModelState.IsValid)
-                {
-                    var result = await _carService.AddRating(ratingDto);
+                var result = await _carService.AddRating(ratingDto);
+                if(result.IsSuccessful)
                     return Ok(result);
-                }
-                return BadRequest(ModelState);
+                return BadRequest(result);
             }
             catch (ArgumentException ex)
             {
@@ -112,7 +110,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [Authorize(Policy= "RequireCustomerOnly")]
+        [Authorize(Policy= "RequireDealerAndCustomer")]
         [HttpPost("AddComment")]
         public async Task<IActionResult> AddComment(CommentDto commentDto)
         {
@@ -122,11 +120,9 @@ namespace RentalCarApi.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                if (ModelState.IsValid)
-                {
-                    var result = await _carService.AddComment(commentDto);
+                var result = await _carService.AddComment(commentDto);
+                if(result.IsSuccessful)
                     return Ok(result);
-                }
                 return BadRequest(ModelState);
             }
             catch (ArgumentException ex)

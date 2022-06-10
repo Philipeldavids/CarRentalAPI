@@ -73,6 +73,7 @@ namespace RentalCarApi.Controllers
                     };
 
                     user.Avatar = result.Url;
+                    user.PublicId = upload.PublicId;
                     await _userManager.UpdateAsync(user);
                     return Ok(result);
                 }
@@ -142,7 +143,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireCustomerOnly")]
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpGet()]
        public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
         {
@@ -150,6 +151,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)response.ResponseCode, response);
         }
 
+        [AllowAnonymous]
         [HttpGet("GetAllDealers")]
         public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber)
         {
@@ -175,6 +177,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpGet("GetAllTrips")]
         public async Task<IActionResult> GetAllTrips(int pageSize, int pageNumber)
         {
@@ -200,7 +203,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireCustomerOnly")]
+        [Authorize(Policy = "RequireDealerOnly")]
         [HttpPost("AddNewDealer")]
         public async Task<IActionResult> AddNewDealer(DealerRequestDTO requestDTO)
         {
@@ -226,9 +229,9 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        [Authorize(Policy = "RequireCustomerOnly")]
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpPatch("DeleteUser")]
-       // [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> DeleteAUser(string userId)
         {
             if(!ModelState.IsValid)
@@ -239,7 +242,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)deletedUser.ResponseCode, deletedUser);
         }
 
-        [Authorize(Policy = "RequireCustomerOnly")]
+        [Authorize(Policy = "RequireDealerAndCustomer")]
         [HttpGet("GetAllUserTransactionDetails")]
         public async Task<IActionResult> GetAllUserTransactionDetails(string userId)
         {
