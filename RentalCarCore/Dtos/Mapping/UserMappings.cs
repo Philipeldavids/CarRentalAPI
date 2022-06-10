@@ -66,7 +66,9 @@ namespace RentalCarCore.Dtos.Mapping
             CreateMap<Car, CarOfferDto>()
                 .ForMember(car => car.ImageUrl, opt => opt.MapFrom(src => src.Images.FirstOrDefault(gallery => gallery.IsFeature).ImageUrl))
                 .ForMember(car => car.Rating, opt => opt.MapFrom(src => src.Ratings.Count == 0 ? 0 : (double)src.Ratings.Sum(car => car.Ratings) / ((double)src.Ratings.Count)))
-                .ForMember(car => car.Count, opt => opt.MapFrom(src => src.Ratings.Count)).ReverseMap();
+                .ForMember(car => car.Count, opt => opt.MapFrom(src => src.Ratings.Count))
+                .ForMember(car => car.Offer, opt => opt.MapFrom(src => src.Offers.OrderByDescending(x => x.CreatedAt).FirstOrDefault()))
+                .ReverseMap();
 
 
             // Car listings
