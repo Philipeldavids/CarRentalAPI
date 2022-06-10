@@ -17,6 +17,7 @@ namespace RentalCarApi.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -28,7 +29,7 @@ namespace RentalCarApi.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
-
+       
         [HttpGet("Id/GetUserTrips")]
         public async Task<IActionResult> GetUserTrips(string Id)
         {
@@ -54,6 +55,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        
         [HttpPatch("Id/UploadImage")]
         public async Task<IActionResult> UploadImage(string Id, [FromForm] AddImageDto imageDto)
         {
@@ -82,7 +84,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        //[Authorize]
+        
         [HttpPut]
         [Route("Id")]
         public async Task<IActionResult> UpdatePassword(string Id, UpdateUserDto updateUserdDto)
@@ -140,8 +142,8 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireCustomerOnly")]
         [HttpGet()]
-        //[Authorize(Roles = "Admin")]
        public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
         {
             var response = await _userService.GetUsersAsync(pageSize, pageNumber);
@@ -198,6 +200,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireCustomerOnly")]
         [HttpPost("AddNewDealer")]
         public async Task<IActionResult> AddNewDealer(DealerRequestDTO requestDTO)
         {
@@ -223,6 +226,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireCustomerOnly")]
         [HttpPatch("DeleteUser")]
        // [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAUser(string userId)
@@ -235,6 +239,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)deletedUser.ResponseCode, deletedUser);
         }
 
+        [Authorize(Policy = "RequireCustomerOnly")]
         [HttpGet("GetAllUserTransactionDetails")]
         public async Task<IActionResult> GetAllUserTransactionDetails(string userId)
         {

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalCarCore.Dtos.Request;
@@ -10,8 +11,9 @@ using Serilog;
 
 namespace RentalCarApi.Controllers
 {
-    [Route("api/v1/[controller]")]
     [ApiController]
+    [Route("api/v1/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class CarsController : ControllerBase
     {
         private readonly ICarService _carService;
@@ -21,7 +23,7 @@ namespace RentalCarApi.Controllers
             _carService = carService;
             _userService = userService;
         }
-
+        [AllowAnonymous]
         [HttpGet("GetFeaturedCars")]
         public async Task<IActionResult> GetFeaturedCars()
         {
@@ -46,6 +48,8 @@ namespace RentalCarApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured we are working on it");
             }
         }
+
+        [AllowAnonymous]
         [HttpGet("Id")]
         public async Task<IActionResult> GetCarDetails(string Id)
         {
@@ -71,6 +75,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet()]
         public async Task<IActionResult> GetAllCars(int pageSize, int pageNumber)
         {
@@ -78,6 +83,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)carResponse.ResponseCode, carResponse);
         }
 
+        [Authorize(Policy = "RequireCustomerOnly")]
         [HttpPost("AddRating")]
         public async Task<IActionResult> AddRating(RatingDto ratingDto)
         {
@@ -105,6 +111,8 @@ namespace RentalCarApi.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured, try again after 5 minutes");
             }
         }
+
+        [Authorize(Policy= "RequireCustomerOnly")]
         [HttpPost("AddComment")]
         public async Task<IActionResult> AddComment(CommentDto commentDto)
         {
@@ -134,7 +142,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-
+        [AllowAnonymous]
         [HttpGet("SearchCars")]
         public async Task<IActionResult> GetSearchCars(string state, DateTime pickupDate, DateTime returnDate)
         {
@@ -163,7 +171,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-
+        [AllowAnonymous]
         [HttpGet("GetAllOfferedCars")]
         public async Task<IActionResult> GetAllOfferCars(int pageSize, int pageNumber)
         {
@@ -192,6 +200,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("PaymentForCarTrip")]
         public async Task<IActionResult> MakeCarPayment(PaymentRequestDTO request)
         {
@@ -217,6 +226,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("BookTrip")]
         public async Task<IActionResult> BookTrip(TripBookingRequestDTO tripRequest)
         {
@@ -243,6 +253,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpPost("verifypayment")]
         public IActionResult ConfirmPayment(string reference)
         {
@@ -269,6 +280,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireDealerOnly")]
         [HttpDelete("DeleteACar")]
         public async Task<IActionResult> DeleteACar(string carId, string dealerId)
         {
@@ -295,6 +307,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireDealerOnly")]
         [HttpPost("AddNewCar")]
         public async Task<IActionResult> AddACar(CarRequestDTO requestDTO)
         {
@@ -323,8 +336,9 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireDealerOnly")]
         [HttpPut("id")]
-        //[Authorize(Roles = "Dealer")]
+
         public async Task<IActionResult> UpdateCar(string carId, CarUpdateDto carUpdateDto)
         {
 
