@@ -23,7 +23,7 @@ namespace RentalCarApi.Extentions
             {
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateAudience = true,
+                    ValidateAudience = false,
                     ValidateIssuer = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
@@ -41,7 +41,7 @@ namespace RentalCarApi.Extentions
                 options.AddPolicy("RequireAdminOnly", policy => policy.RequireRole(UserRoles.Admin));
                 options.AddPolicy("RequireDealerOnly", policy => policy.RequireRole(UserRoles.Dealer));
                 options.AddPolicy("RequireCustomerOnly", policy => policy.RequireRole(UserRoles.Customer));
-                options.AddPolicy("RequireDealerAndCustomer", policy => policy.RequireRole(UserRoles.Dealer, UserRoles.Admin));
+                options.AddPolicy("RequireDealerAndCustomer", policy => policy.RequireRole(UserRoles.Dealer, UserRoles.Customer));
             });
 
 

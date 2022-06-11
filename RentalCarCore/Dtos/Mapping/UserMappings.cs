@@ -66,7 +66,9 @@ namespace RentalCarCore.Dtos.Mapping
             CreateMap<Car, CarOfferDto>()
                 .ForMember(car => car.ImageUrl, opt => opt.MapFrom(src => src.Images.FirstOrDefault(gallery => gallery.IsFeature).ImageUrl))
                 .ForMember(car => car.Rating, opt => opt.MapFrom(src => src.Ratings.Count == 0 ? 0 : (double)src.Ratings.Sum(car => car.Ratings) / ((double)src.Ratings.Count)))
-                .ForMember(car => car.Count, opt => opt.MapFrom(src => src.Ratings.Count)).ReverseMap();
+                .ForMember(car => car.Count, opt => opt.MapFrom(src => src.Ratings.Count))
+                .ForMember(car => car.Offer, opt => opt.MapFrom(src => src.Offers.OrderByDescending(x => x.CreatedAt).FirstOrDefault()))
+                .ReverseMap();
 
 
             // Car listings
@@ -78,10 +80,6 @@ namespace RentalCarCore.Dtos.Mapping
             // Dealer listings
 
             CreateMap<Dealer, GetAllDealerResponseDto>()
-                .ForMember(dealer => dealer.Address, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.State, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Latitude, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Longitude, opt => opt.MapFrom(op => op.Locations))
                 .ReverseMap();
 
             // Add New Car
@@ -121,14 +119,7 @@ namespace RentalCarCore.Dtos.Mapping
                 .ReverseMap();
 
 
-            // Dealer listings
-
-            CreateMap<Dealer, GetAllDealerResponseDto>()
-                .ForMember(dealer => dealer.Address, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.State, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Latitude, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Longitude, opt => opt.MapFrom(op => op.Locations))
-                .ReverseMap();
+            
 
 
         }

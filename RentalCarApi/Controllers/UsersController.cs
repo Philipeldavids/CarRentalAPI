@@ -17,6 +17,7 @@ namespace RentalCarApi.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -28,7 +29,7 @@ namespace RentalCarApi.Controllers
             _imageService = imageService;
             _userManager = userManager;
         }
-
+       
         [HttpGet("Id/GetUserTrips")]
         public async Task<IActionResult> GetUserTrips(string Id)
         {
@@ -54,6 +55,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        
         [HttpPatch("Id/UploadImage")]
         public async Task<IActionResult> UploadImage(string Id, [FromForm] AddImageDto imageDto)
         {
@@ -71,6 +73,7 @@ namespace RentalCarApi.Controllers
                     };
 
                     user.Avatar = result.Url;
+                    user.PublicId = upload.PublicId;
                     await _userManager.UpdateAsync(user);
                     return Ok(result);
                 }
@@ -82,7 +85,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
-        //[Authorize]
+        
         [HttpPut]
         [Route("Id")]
         public async Task<IActionResult> UpdatePassword(string Id, UpdateUserDto updateUserdDto)
@@ -140,14 +143,15 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpGet()]
-        //[Authorize(Roles = "Admin")]
        public async Task<IActionResult> GetAllUser(int pageSize, int pageNumber)
         {
             var response = await _userService.GetUsersAsync(pageSize, pageNumber);
             return StatusCode((int)response.ResponseCode, response);
         }
 
+        [AllowAnonymous]
         [HttpGet("GetAllDealers")]
         public async Task<IActionResult> GetAllDealer(int pageSize, int pageNumber)
         {
@@ -173,6 +177,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpGet("GetAllTrips")]
         public async Task<IActionResult> GetAllTrips(int pageSize, int pageNumber)
         {
@@ -198,6 +203,7 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireDealerOnly")]
         [HttpPost("AddNewDealer")]
         public async Task<IActionResult> AddNewDealer(DealerRequestDTO requestDTO)
         {
@@ -223,8 +229,9 @@ namespace RentalCarApi.Controllers
             }
         }
 
+        [Authorize(Policy = "RequireAdminOnly")]
         [HttpPatch("DeleteUser")]
-       // [Authorize(Roles = "Admin")]
+       
         public async Task<IActionResult> DeleteAUser(string userId)
         {
             if(!ModelState.IsValid)
@@ -235,6 +242,7 @@ namespace RentalCarApi.Controllers
             return StatusCode((int)deletedUser.ResponseCode, deletedUser);
         }
 
+        [Authorize(Policy = "RequireDealerAndCustomer")]
         [HttpGet("GetAllUserTransactionDetails")]
         public async Task<IActionResult> GetAllUserTransactionDetails(string userId)
         {
