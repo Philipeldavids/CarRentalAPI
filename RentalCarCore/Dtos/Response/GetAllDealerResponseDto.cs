@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RentalCarInfrastructure.Models;
 
 namespace RentalCarCore.Dtos.Response
 {
@@ -18,10 +19,6 @@ namespace RentalCarCore.Dtos.Response
         public string IdentityNumber { get; set; }
         public string SocialMedia { get; set; }
 
-        public string Address { get; set; }
-
-        public string State { get; set; }
-        public string Latitude { get; set; }
-        public string Longitude { get; set; }
+        public ICollection<Location> Locations { get; set; }
     }
 }

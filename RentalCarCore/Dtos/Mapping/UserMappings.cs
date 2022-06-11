@@ -80,10 +80,6 @@ namespace RentalCarCore.Dtos.Mapping
             // Dealer listings
 
             CreateMap<Dealer, GetAllDealerResponseDto>()
-                .ForMember(dealer => dealer.Address, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.State, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Latitude, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Longitude, opt => opt.MapFrom(op => op.Locations))
                 .ReverseMap();
 
             // Add New Car
@@ -123,14 +119,7 @@ namespace RentalCarCore.Dtos.Mapping
                 .ReverseMap();
 
 
-            // Dealer listings
-
-            CreateMap<Dealer, GetAllDealerResponseDto>()
-                .ForMember(dealer => dealer.Address, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.State, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Latitude, opt => opt.MapFrom(op => op.Locations))
-                .ForMember(dealer => dealer.Longitude, opt => opt.MapFrom(op => op.Locations))
-                .ReverseMap();
+            
 
 
         }
