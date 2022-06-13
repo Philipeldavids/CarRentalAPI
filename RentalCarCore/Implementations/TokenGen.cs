@@ -34,6 +34,7 @@ namespace RentalCarCore.Implementations
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim("FirstName", user.FirstName),
                 new Claim("LastName", user.LastName),
+                new Claim("Avatar", user.Avatar),
             };
 
             //Gets the roles of the logged in user and adds it to Claims
